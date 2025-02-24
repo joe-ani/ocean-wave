@@ -13,9 +13,11 @@ const Map = ({ height = '130px', className = '' }: MapProps) => {
   const targetLocation = { lat: 6.456559134970387, lng: 3.3842979366622847 };
 
   useEffect(() => {
-    if (!mapRef.current) return;
+    let isMounted = true; // Add cleanup flag
 
     const initMap = async () => {
+      if (!mapRef.current || !isMounted) return;
+
       try {
         const loader = new Loader({
           apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
@@ -68,6 +70,10 @@ const Map = ({ height = '130px', className = '' }: MapProps) => {
     };
 
     initMap();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (

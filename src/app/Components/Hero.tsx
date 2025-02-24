@@ -195,7 +195,7 @@ const Hero = () => {
                     </motion.div>
                     <div className="w-[60%] h-[1px] bg-gradient-to-r from-[#FEEF88] to-transparent rounded-full mx-0"></div>
                     <p className="pt-8 text-[14px] md:text-[20px] w-[80%] mx-0 font-normal">
-                        "We offer all types of premium and high-quality wigs."
+                        &quot;We offer all types of premium and high-quality wigs.&quot;
                     </p>
                     <div className="quickact flex space-x-5 md:flex-row space-y-3 md:space-y-0 md:space-x-3 py-4 items-start md:items-center">
                         <Link href={"/shop"} onClick={() => setActiveLink("Shop")}>

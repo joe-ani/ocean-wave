@@ -1,10 +1,10 @@
 "use client"
-import { motion, useInView } from 'framer-motion';
-import Image from 'next/image';
-import { Heart, TrendingUp } from 'lucide-react';
-import { useRef, useState } from 'react';
-import { Product } from '@/src/data/products';
-import { useRouter } from 'next/navigation';
+import React, { useRef, useState } from "react";
+import { motion, useInView } from "framer-motion";
+import Image from "next/image";
+import { Heart, TrendingUp } from "lucide-react";
+import { Product } from "@/src/data/products";
+import { useRouter } from "next/navigation";
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -25,7 +25,7 @@ const likeColour = {
   off: "#ffffff50"
 };
 
-export const ProductCard = ({ product }: { product: Product }) => {
+export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   const [isLiked, setIsLiked] = useState(false);
   const ref = useRef(null);
   const inView = useInView(ref);
@@ -33,19 +33,19 @@ export const ProductCard = ({ product }: { product: Product }) => {
 
   const handleProductClick = () => {
     try {
-      const slug = product.name.toLowerCase().replace(/\s+/g, '-');
+      const slug = product.name.toLowerCase().replace(/\s+/g, "-");
       const productData = {
         name: product.name,
         price: product.price,
         img: product.image, // Ensure this matches the expected property in the product page
         // add other necessary properties
       };
-      localStorage.setItem('selectedProduct', JSON.stringify(productData));
+      localStorage.setItem("selectedProduct", JSON.stringify(productData));
       router.push(`/product/${slug}`);
     } catch (error) {
-      console.error('Error saving product data:', error);
+      console.error("Error saving product data:", error);
       // Fallback navigation
-      const slug = product.name.toLowerCase().replace(/\s+/g, '-');
+      const slug = product.name.toLowerCase().replace(/\s+/g, "-");
       router.push(`/product/${slug}`);
     }
   };
@@ -89,8 +89,9 @@ export const ProductCard = ({ product }: { product: Product }) => {
           className="object-contain w-full h-full"
           width={120}
           height={240}
-          alt={product.name}
+          alt={product.name || "Product image"}
           src={product.image}
+          priority={true}
         />
       </div>
 

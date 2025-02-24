@@ -8,15 +8,14 @@ import { useSearchParams } from 'next/navigation';
 import { CATEGORIES, Category } from '@/src/data/categories';
 import { COLORS } from '@/src/data/colors';
 
-const page = () => {
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const [showScrollTop, setShowScrollTop] = useState(false);
+const ShopPage = () => {  // Renamed from 'page' to follow convention
   const searchParams = useSearchParams();
   const initialSearchQuery = searchParams.get('search') || "";
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
-  const categoryFilter = searchParams.get('category');
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [activeColor, setActiveColor] = useState<string | null>(null);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -27,18 +26,13 @@ const page = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Combine category and search param effects
   useEffect(() => {
     const category = searchParams.get('category');
-    if (category) {
-      setActiveCategory(category);
-    }
-  }, [searchParams]);
-
-  useEffect(() => {
     const search = searchParams.get('search');
-    if (search) {
-      setSearchQuery(search);
-    }
+
+    if (category) setActiveCategory(category);
+    if (search) setSearchQuery(search);
   }, [searchParams]);
 
   const filteredProducts = useMemo(() => {
@@ -159,7 +153,7 @@ const page = () => {
             animate={{ rotate: isFilterOpen ? 180 : 0 }}
             transition={{ duration: 0.3 }}
           >
-            <Image 
+            <Image
               width={20}
               height={20}
               src="/icons/dropdown.png"
@@ -285,4 +279,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default ShopPage;
