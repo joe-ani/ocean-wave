@@ -77,7 +77,7 @@ const OpeningHours = () => {
         variants={sectionVariant}
       >
         {/* Image mask mobile */}
-        <div className="w-[220px] h-[150px] md:w-full md:h-[280px] bg-black rounded-[20px] overflow-hidden md:overscroll-none md:relative">
+        <div className="w-[200px] h-[150px] md:w-full md:h-[280px] bg-black rounded-[20px] overflow-hidden md:overscroll-none md:relative">
           {/* Image shop and map */}
           <div className="h-full w-full md:absolute md:w-full">
             {/* Image */}
@@ -85,7 +85,7 @@ const OpeningHours = () => {
               <Image
                 className="object-cover scale-[1.4] md:scale-100 object-[80%_45%] md:object-center"
                 fill
-                sizes="(max-width: 768px) 230px, 100vw"
+                sizes="(max-width: 768px) 200px, 100vw"
                 src="/images/shop.png"
                 alt="fugo shop"
                 priority
@@ -95,17 +95,17 @@ const OpeningHours = () => {
             </div>
             {/*Map */}
             <div className="absolute flex flex-col top-[170px] md:top-[20%] left-0 md:left-[10%] space-y-2">
-              <div className="relative w-[220px] md:w-[250px] border-2 border-[#333333] rounded-lg md:border-0">
+              <div className="relative w-[200px] md:w-[250px] border-2 border-[#333333] rounded-lg md:border-0">
                 <Map height="130px" />
               </div>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.9 }}
                 style={{ backdropFilter: "blur(.2em)" }}
-                className="flex space-x-2 md:space-x-4 items-center justify-center w-[220px] md:w-[70%] text-white text-sm bg-[#55555558] rounded-full py-3 md:p-2 border-[1.5px] border-[#fff] md:border-[#5b5b5b]"
+                className="flex space-x-2 md:space-x-4 items-center justify-center w-[200px] md:w-[70%] text-white text-sm bg-[#333333] md:bg-[#55555558] rounded-full py-3 md:p-2 border-[1.5px] border-[#fff] md:border-[#5b5b5b]"
                 onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=6.456559134970387,3.3842979366622847`)}
               >
-                <div className="">Locate Us</div>
+                <div className="">Get Directions</div>
                 <Image
                   width={20}
                   height={20}

@@ -98,7 +98,7 @@ const Hero = () => {
             {/* blur layer */}
             <div className="cont1 w-full flex flex-col md:flex-row justify-around items-center px-8 md:px-20 lg:px-40 pb-8 pt-0 md:pt-20">
                 {/* hero nav */}
-                <div className="logo mb-10 md:mb-0 flex justify-between w-full md:w-auto">
+                <div className="logo  md:mb-0 flex justify-between w-full md:w-auto">
                     <Image className="w-32 h-auto md:w-52" width={200} height={100} alt="Dfugo logo" src="/logo.png" />
                     <div className="md:hidden flex items-center">
                         <button onClick={() => setMenuOpen(!menuOpen)} className="text-white">
@@ -223,32 +223,32 @@ const Hero = () => {
                     variants={highlightVariants}
                     initial="hidden"
                     animate="visible"
-                    className="highlight absolute top-[260px] md:relative md:top-0 w-40 md:w-80 flex items-center justify-center mt-8 md:mt-0">
+                    className="highlight absolute top-[200px] md:relative md:top-0 w-48 md:w-80 flex items-center justify-center mt-8 md:mt-0">
                     {/* Model */}
                     <motion.div variants={modelImageVariants} className="absolute">
-                        <Image width={240} height={160} alt="Dfugo logo" src="/model.png" className="w-44 md:w-auto z-10 relative" />
+                        <Image width={240} height={160} alt="Dfugo logo" src="/model.png" className="w-52 md:w-auto z-10 relative" />
                         <div className="bg-[#FEEF88] rounded-full w-full h-full absolute top-0"></div>
                         <div className="fade-boundary"></div>
                     </motion.div>
                     {/* highlight container */}
                     <motion.div
                         variants={cardVariants}
-                        className="w-[180px] md:w-[200px] highlight-box rounded-[20px] p-[18px] md:p-[20px] md:rounded-[30px] z-10 space-y-2 md:space-y-4 absolute flex flex-col top-[-100px] md:top-[0px]">
+                        className="w-[170px] md:w-[200px] highlight-box rounded-[16px] p-[14px] md:p-[20px] md:rounded-[30px] z-10 space-y-2 md:space-y-4 absolute flex flex-col top-[-120px] md:top-[0px]">
                         <div className="flex justify-between items-center relative">
-                            <div className="bg-[#fee88e] text-[10px] md:text-[14px] text-black font-semibold rounded-full p-1 px-4 md:px-5">Featured</div>
+                            <div className="bg-[#fee88e] text-[8px] md:text-[14px] text-black font-semibold rounded-full p-1 px-3 md:px-5">Featured</div>
                             <motion.div
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
-                                className="p-2 md:p-4 rounded-full relative flex items-center justify-center cursor-pointer hover:bg-[#cccccc28]">
-                                <Image className="absolute w-3.5 md:w-4" width={16} height={16} src={"/icons/arrowwhite.png"} alt="" />
+                                className="p-1.5 md:p-4 rounded-full relative flex items-center justify-center cursor-pointer hover:bg-[#cccccc28]">
+                                <Image className="absolute w-3 md:w-4" width={16} height={16} src={"/icons/arrowwhite.png"} alt="" />
                             </motion.div>
                         </div>
-                        <div className="flex flex-col space-y-2 md:space-y-3">
-                            <h1 className="text-[10px] md:text[16px]">Our best sellers</h1>
+                        <div className="flex flex-col space-y-1.5 md:space-y-3">
+                            <h1 className="text-[8px] md:text[16px]">Our best sellers</h1>
                             <div className="w-[100%] h-[1px] bg-[#ccc] rounded-full"></div>
                         </div>
-                        <div className="flex bg-[#cccccc39] p-[8px] md:p-[10px] rounded-[10px]">
-                            <Image width={24} height={16} src={"/images/wig1.png"} alt="" className="w-5 md:w-6" />
+                        <div className="flex bg-[#cccccc39] p-[6px] md:p-[10px] rounded-[8px]">
+                            <Image width={24} height={16} src={"/images/wig1.png"} alt="" className="w-4 md:w-6" />
                         </div>
                     </motion.div>
                 </motion.div>

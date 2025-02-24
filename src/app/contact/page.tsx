@@ -45,14 +45,14 @@ export default function ContactPage() {
           <h2 className="text-2xl sm:text-3xl font-bold mb-4">Visit Our Store</h2>
           <p className="text-base sm:text-lg text-gray-600 mb-6">
             D&apos;Fugo Hair<br />
-            123 Hair Street, Beauty District<br />
-            London, UK SW1A 1AA
+            10, Balogun street<br />
+            Lagos Island, Lagos Nigeria
           </p>
 
           <div className="space-y-2 text-gray-600 mb-8">
             <p className="text-sm sm:text-base">Monday - Saturday: 8:00 AM - 1:00 PM</p>
             <p className="text-sm sm:text-base text-red-400">Sunday: Closed</p>
-            <p className="text-sm sm:text-base mt-4">📞 +44 20 1234 5678</p>
+            <p className="text-sm sm:text-base mt-4">📞 +2348038683235</p>
           </div>
 
           <motion.button
