@@ -1,5 +1,6 @@
-"use client"
-import { useEffect, useRef, useState } from 'react';
+'use client';
+
+import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -9,38 +10,16 @@ interface MapProps {
   className?: string;
 }
 
-// Create marker icon configuration
-const createIcon = () => L.icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-  shadowAnchor: [12, 41],
-  className: 'marker-bounce'
-});
-
-// Scroll zoom controller component
 const ScrollZoomController = () => {
-  const [isMounted, setIsMounted] = useState(false);
   const map = useMap();
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isMounted || typeof window === 'undefined') return;
-
     const handleScroll = () => {
       const mapElement = map.getContainer();
-      const viewportHeight = window?.innerHeight || 0;
       const rect = mapElement.getBoundingClientRect();
+      const viewportCenter = window.innerHeight / 2;
       const elementCenter = rect.top + rect.height / 2;
-      const viewportCenter = viewportHeight / 2;
-      const distanceFromCenter = Math.abs(elementCenter - viewportCenter) / viewportHeight;
+      const distanceFromCenter = Math.abs(elementCenter - viewportCenter) / window.innerHeight;
       const newZoom = 14 + ((1 - distanceFromCenter) * 4);
 
       map.setZoom(Math.min(Math.max(newZoom, 14), 18), {
@@ -49,109 +28,46 @@ const ScrollZoomController = () => {
       });
     };
 
-    window?.addEventListener('scroll', handleScroll);
-    return () => window?.removeEventListener('scroll', handleScroll);
-  }, [map, isMounted]);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [map]);
 
   return null;
 };
 
-const Map = ({ height = '170px', className = '' }: MapProps) => {
-  const [isMounted, setIsMounted] = useState(false);
+const Map: React.FC<MapProps> = ({ height = '170px', className = '' }) => {
   const targetLocation: [number, number] = [6.456559134970387, 3.3842979366622847];
+  const [mapIcon, setMapIcon] = useState<L.Icon | null>(null);
 
   useEffect(() => {
-    setIsMounted(true);
-    if (!isMounted || typeof window === 'undefined') return;
-
-    // Initialize Leaflet icons
-    delete (L.Icon.Default.prototype as any)._getIconUrl;
-    L.Icon.Default.mergeOptions({
+    const icon = L.icon({
       iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
       iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
       shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41],
+      shadowAnchor: [12, 41],
+      className: 'marker-bounce'
     });
-
-    // Add styles
-    const style = document.createElement('style');
-    style.textContent = `
-      .marker-bounce {
-        animation: bounce 0.5s ease-in-out infinite alternate;
-      }
-      @keyframes bounce {
-        from { transform: translateY(0); }
-        to { transform: translateY(-10px); }
-      }
-      .leaflet-container {
-        background: #1a1a1a !important;
-        z-index: 1 !important;
-      }
-      .leaflet-tile-pane {
-        filter: grayscale(80%) invert(100%) contrast(90%) hue-rotate(180deg) brightness(85%);
-      }
-      .leaflet-control-attribution {
-        display: none;
-      }
-      .leaflet-pane {
-        z-index: 1 !important;
-      }
-      .leaflet-top,
-      .leaflet-bottom {
-        z-index: 1 !important;
-      }
-      .leaflet-touch .leaflet-control-zoom {
-        border: none;
-        background: rgba(0,0,0,0.5);
-      }
-      .leaflet-control-zoom-in,
-      .leaflet-control-zoom-out {
-        color: white !important;
-        background: transparent !important;
-      }
-      .leaflet-control-zoom a:hover {
-        background: rgba(255,255,255,0.1) !important;
-      }
-      .leaflet-marker-icon {
-        filter: brightness(1.2);
-      }
-    `;
-    document.head.appendChild(style);
-    return () => {
-      document.head.removeChild(style);
-    };
-  }, [isMounted]);
+    setMapIcon(icon);
+  }, []);
 
   return (
-    <div style={{
-      height,
-      width: '100%',
-      position: 'relative',
-      zIndex: 1
-    }} className={className}>
+    <div style={{ height, width: '100%' }} className={className}>
       <MapContainer
         center={targetLocation}
         zoom={15}
-        style={{
-          height: '100%',
-          width: '100%',
-          borderRadius: '15px',
-          position: 'relative',
-          zIndex: 1
-        }}
+        style={{ height: '100%', width: '100%', borderRadius: '15px' }}
         zoomControl={true}
         scrollWheelZoom={true}
-        dragging={true}
-        doubleClickZoom={true}
-        touchZoom={true}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution=""
         />
-        <Marker
-          position={targetLocation}
-          icon={createIcon()}
-        />
+        {mapIcon && <Marker position={targetLocation} icon={mapIcon} />}
         <ScrollZoomController />
       </MapContainer>
     </div>

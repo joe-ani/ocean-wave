@@ -1,4 +1,3 @@
-"use client"
 import Hero from "./Components/Hero";
 import Offer from "./Components/Offer";
 import LatestProduct from "./Components/LatestProduct";
@@ -10,6 +9,7 @@ import ContactForm from "./Components/ContactForm";
 import Footer from "./Components/Footer";
 import Nav from "./Components/Nav";
 import WhatsAppButton from "./Components/WhatsAppButton";
+import ClientMap from "./Components/ClientMap";
 
 const HomePage = () => {
   return (
@@ -77,6 +77,7 @@ const HomePage = () => {
         <ContactForm />
       </div>
       {/* -------------- */}
+      <ClientMap />
       <WhatsAppButton />
       <Footer />
     </div>
