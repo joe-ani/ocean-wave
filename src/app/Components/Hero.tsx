@@ -189,13 +189,14 @@ const Hero = () => {
 
     return (
         <div className="hero bg-[#111111] h-screen flex flex-col justify-center items-center">
-            {/* Overlay when mobile menu is open */}
+            {/* Updated Overlay with blur effect */}
             {menuOpen && (
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40"
                     onClick={() => setMenuOpen(false)}
                 />
             )}

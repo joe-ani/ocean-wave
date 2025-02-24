@@ -131,17 +131,19 @@ const Nav = () => {
     })
   };
 
-  // Add useEffect for click away listener
+  // Update the click-away handler to check for search input
   useEffect(() => {
     const handleClickAway = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      const menu = document.getElementById('mobile-menu');
-      const hamburger = document.getElementById('hamburger-button');
+      if (!isMenuOpen) return;
 
-      if (menu && hamburger &&
-        !menu.contains(target) &&
-        !hamburger.contains(target) &&
-        isMenuOpen) {
+      const target = event.target as HTMLElement;
+      const menu = document.getElementById('mobile-menu-container');
+      const hamburger = document.getElementById('hamburger-button');
+      const isClickInsideMenu = menu?.contains(target);
+      const isClickOnHamburger = hamburger?.contains(target);
+      const isClickOnOverlay = target.classList.contains('menu-overlay');
+
+      if (!isClickInsideMenu && !isClickOnHamburger || isClickOnOverlay) {
         setIsMenuOpen(false);
       }
     };
@@ -151,100 +153,165 @@ const Nav = () => {
   }, [isMenuOpen]);
 
   return (
-    <nav className={`fixed top-0 w-full z-[100] bg-[#111111] text-white p-6 transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"}`}>
-      {/* Overlay with fade effect */}
+    <>
+      {/* Dark overlay separate from nav */}
       {isMenuOpen && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 backdrop-blur-sm"
+          transition={{ duration: 0.3 }}
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[90]"
           onClick={() => setIsMenuOpen(false)}
         />
       )}
 
-      <div className="container mx-auto">
-        <div className="flex justify-between items-center">
-          {/* Logo - adjusted size */}
-          <Link href={"/"}>
-            <Image src="/logo.png" alt="Logo" width={100} height={50} />
-          </Link>
+      <nav className={`fixed top-0 w-full z-[100] bg-[#111111] text-white p-6 transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"}`}>
+        <div className="container mx-auto relative">
+          {/* Main nav content */}
+          <div className="flex justify-between items-center relative z-[110]">
+            {/* Logo - adjusted size */}
+            <Link href={"/"}>
+              <Image src="/logo.png" alt="Logo" width={100} height={50} />
+            </Link>
 
-          <div className="flex items-center space-x-8">
-            {/* Nav items - adjusted spacing */}
-            <motion.ul
-              animate={{ opacity: showSearch ? 0 : 1 }}
-              transition={{ duration: 0.2 }}
-              className={`list-none hidden md:flex items-center space-x-8 font-medium ${showSearch ? 'invisible' : 'visible'}`}
-            >
-              {["Home", "Shop", "Contact", "About"].map((link) => (
-                <li
-                  key={link}
-                  className={`relative cursor-pointer flex flex-col items-center ${activeLink === link ? "text-[#FEEF88]" : ""}`}
-                  onClick={() => handleNavClick(link)}
-                >
-                  <div>{link}</div>
-                  {activeLink === link && (
-                    <motion.div
-                      className="absolute top-8 bg-[#fee88e] w-[10px] h-[10px] rounded-full"
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ duration: 0.2 }}
-                    ></motion.div>
-                  )}
-                </li>
-              ))}
-            </motion.ul>
-
-            {/* Search container - adjusted sizing */}
-            <div className="relative flex items-center z-[101]">
-              <button
-                type="button"
-                className="rounded-full p-3 cursor-pointer hover:bg-[#cccccc21] hidden md:flex items-center justify-center relative z-[102]"
-                onClick={() => setShowSearch(!showSearch)}
+            <div className="flex items-center space-x-8">
+              {/* Nav items - adjusted spacing */}
+              <motion.ul
+                animate={{ opacity: showSearch ? 0 : 1 }}
+                transition={{ duration: 0.2 }}
+                className={`list-none hidden md:flex items-center space-x-8 font-medium ${showSearch ? 'invisible' : 'visible'}`}
               >
-                <Image
-                  className="object-contain pointer-events-none"
-                  width={16}
-                  height={20}
-                  src={"/icons/search2.png"}
-                  alt={"search icon"}
-                />
-              </button>
+                {["Home", "Shop", "Contact", "About"].map((link) => (
+                  <li
+                    key={link}
+                    className={`relative cursor-pointer flex flex-col items-center ${activeLink === link ? "text-[#FEEF88]" : ""}`}
+                    onClick={() => handleNavClick(link)}
+                  >
+                    <div>{link}</div>
+                    {activeLink === link && (
+                      <motion.div
+                        className="absolute top-8 bg-[#fee88e] w-[10px] h-[10px] rounded-full"
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ duration: 0.2 }}
+                      ></motion.div>
+                    )}
+                  </li>
+                ))}
+              </motion.ul>
 
-              {/* Inline search bar - adjusted size */}
-              {showSearch && (
-                <motion.form
-                  initial={{ opacity: 0, width: 0 }}
-                  animate={{ opacity: 1, width: "240px" }}
-                  exit={{ opacity: 0, width: 0 }}
-                  onSubmit={handleSearch}
-                  className="absolute right-12 top-1/2 -translate-y-1/2"
+              {/* Search container - adjusted sizing */}
+              <div className="relative flex items-center z-[101]">
+                <button
+                  type="button"
+                  className="rounded-full p-3 cursor-pointer hover:bg-[#cccccc21] hidden md:flex items-center justify-center relative z-[102]"
+                  onClick={() => setShowSearch(!showSearch)}
                 >
-                  <div className="relative">
-                    <input
-                      type="text"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full px-4 py-2 rounded-full bg-[#cccccc21] text-white focus:outline-none"
-                      placeholder="Search products..."
-                      autoFocus
+                  <Image
+                    className="object-contain pointer-events-none"
+                    width={16}
+                    height={20}
+                    src={"/icons/search2.png"}
+                    alt={"search icon"}
+                  />
+                </button>
+
+                {/* Inline search bar - adjusted size */}
+                {showSearch && (
+                  <motion.form
+                    initial={{ opacity: 0, width: 0 }}
+                    animate={{ opacity: 1, width: "240px" }}
+                    exit={{ opacity: 0, width: 0 }}
+                    onSubmit={handleSearch}
+                    className="absolute right-12 top-1/2 -translate-y-1/2"
+                  >
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full px-4 py-2 rounded-full bg-[#cccccc21] text-white focus:outline-none"
+                        placeholder="Search products..."
+                        autoFocus
+                      />
+                    </div>
+                  </motion.form>
+                )}
+              </div>
+
+              {/* Mobile menu button with higher z-index */}
+              <div className="md:hidden flex items-center">
+                <button
+                  id="hamburger-button"
+                  className="text-white focus:outline-none z-[120]"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsMenuOpen(!isMenuOpen);
+                  }}
+                >
+                  <motion.svg
+                    animate={isMenuOpen ? "open" : "closed"}
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16m-7 6h7"}
                     />
-                  </div>
-                </motion.form>
-              )}
+                  </motion.svg>
+                </button>
+              </div>
             </div>
+          </div>
 
-            {/* Mobile menu button - adjusted size */}
-            <div className="md:hidden flex items-center">
+          {/* Updated Mobile Menu with proper container */}
+          <motion.div
+            id="mobile-menu-container"
+            initial="closed"
+            animate={isMenuOpen ? "open" : "closed"}
+            variants={{
+              open: {
+                opacity: 1,
+                y: 0,
+                transition: {
+                  duration: 0.3,
+                  ease: [0.4, 0, 0.2, 1],
+                  staggerChildren: 0.1
+                }
+              },
+              closed: {
+                opacity: 0,
+                y: "-100%",
+                transition: {
+                  duration: 0.3,
+                  ease: [0.4, 0, 0.2, 1],
+                  staggerChildren: 0.05,
+                  staggerDirection: -1
+                }
+              }
+            }}
+            className="fixed top-0 left-0 w-full bg-[#111111] z-[110] md:hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Mobile Header */}
+            <div className="flex justify-between items-center px-8 pt-6 pb-4 border-b border-[#ffffff20]">
+              <Link href={"/"}>
+                <Image src="/logo.png" alt="Logo" width={100} height={50} />
+              </Link>
               <button
-                id="hamburger-button"
-                className="text-white focus:outline-none"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="text-white focus:outline-none p-2"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsMenuOpen(false);
+                }}
               >
-                <motion.svg
-                  animate={isMenuOpen ? "open" : "closed"}
+                <svg
                   className="w-6 h-6"
                   fill="none"
                   stroke="currentColor"
@@ -255,123 +322,69 @@ const Nav = () => {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth="2"
-                    d={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16m-7 6h7"}
+                    d="M6 18L18 6M6 6l12 12"
                   />
-                </motion.svg>
+                </svg>
               </button>
             </div>
-          </div>
-        </div>
 
-        {/* Mobile menu */}
-        <motion.div
-          id="mobile-menu"
-          initial="closed"
-          animate={isMenuOpen ? "open" : "closed"}
-          variants={{
-            open: {
-              opacity: 1,
-              y: 0,
-              transition: {
-                duration: 0.3,
-                ease: [0.4, 0, 0.2, 1],
-                staggerChildren: 0.1
-              }
-            },
-            closed: {
-              opacity: 0,
-              y: "-100%",
-              transition: {
-                duration: 0.3,
-                ease: [0.4, 0, 0.2, 1],
-                staggerChildren: 0.05,
-                staggerDirection: -1
-              }
-            }
-          }}
-          className="fixed top-0 left-0 w-full bg-[#111111] z-40 md:hidden"
-        >
-          {/* Mobile Header */}
-          <div className="flex justify-between items-center px-8 pt-6 pb-4 border-b border-[#ffffff20]">
-            <Link href={"/"}>
-              <Image src="/logo.png" alt="Logo" width={100} height={50} />
-            </Link>
-            <button
-              className="text-white focus:outline-none p-2"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
+            {/* Mobile Menu Content */}
+            <div className="pt-8 pb-8 px-8 flex flex-col items-center gap-8">
+              {/* Mobile Search */}
+              <motion.form
+                id="mobile-search-form"
+                variants={menuItemVariants}
+                custom={0}
+                className="relative w-full max-w-[280px]"
+                onSubmit={handleSearch}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                ></path>
-              </svg>
-            </button>
-          </div>
-
-          {/* Mobile Menu Content */}
-          <div className="pt-8 pb-8 px-8 flex flex-col items-center gap-8">
-            {/* Mobile Search */}
-            <motion.form
-              variants={menuItemVariants}
-              custom={0}
-              className="relative w-full max-w-[280px]"
-              onSubmit={handleSearch}
-            >
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-6 py-3 rounded-full bg-[#ffffff10] text-white focus:outline-none focus:ring-2 focus:ring-[#FEEF88] transition-all text-center"
-                placeholder="Search products..."
-              />
-              <button
-                type="submit"
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2"
-              >
-                <Image width={16} height={16} src="/icons/search2.png" alt="search" />
-              </button>
-            </motion.form>
-
-            {/* Navigation Links */}
-            <div className="flex flex-col items-center gap-8 w-full">
-              {["Home", "Shop", "Contact", "About"].map((link, i) => (
-                <motion.div
-                  key={link}
-                  variants={menuItemVariants}
-                  custom={i + 1}
-                  className="relative flex flex-col items-center"
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full px-6 py-3 rounded-full bg-[#ffffff10] text-white focus:outline-none focus:ring-2 focus:ring-[#FEEF88] transition-all text-center"
+                  placeholder="Search products..."
+                />
+                <button
+                  type="submit"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2"
                 >
-                  <button
-                    onClick={() => handleNavClick(link)}
-                    className={`text-center text-lg font-medium py-2 px-4 ${activeLink === link ? "text-[#FEEF88]" : "text-white"
-                      }`}
+                  <Image width={16} height={16} src="/icons/search2.png" alt="search" />
+                </button>
+              </motion.form>
+
+              {/* Navigation Links */}
+              <div className="flex flex-col items-center gap-8 w-full">
+                {["Home", "Shop", "Contact", "About"].map((link, i) => (
+                  <motion.div
+                    key={link}
+                    variants={menuItemVariants}
+                    custom={i + 1}
+                    className="relative flex flex-col items-center"
                   >
-                    {link}
-                  </button>
-                  {activeLink === link && (
-                    <motion.div
-                      className="absolute -bottom-2 bg-[#fee88e] w-[6px] h-[6px] rounded-full"
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ duration: 0.2 }}
-                    />
-                  )}
-                </motion.div>
-              ))}
+                    <button
+                      onClick={() => handleNavClick(link)}
+                      className={`text-center text-lg font-medium py-2 px-4 ${activeLink === link ? "text-[#FEEF88]" : "text-white"
+                        }`}
+                    >
+                      {link}
+                    </button>
+                    {activeLink === link && (
+                      <motion.div
+                        className="absolute -bottom-2 bg-[#fee88e] w-[6px] h-[6px] rounded-full"
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ duration: 0.2 }}
+                      />
+                    )}
+                  </motion.div>
+                ))}
+              </div>
             </div>
-          </div>
-        </motion.div>
-      </div>
-    </nav>
+          </motion.div>
+        </div>
+      </nav>
+    </>
   );
 };
 
