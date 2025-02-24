@@ -96,7 +96,7 @@ const OpeningHours = () => {
             {/*Map */}
             <div className="absolute flex flex-col top-[170px] md:top-[20%] left-0 md:left-[10%] space-y-2">
               <div className="relative w-[200px] md:w-[250px] border-2 border-[#333333] rounded-lg md:border-0">
-                <Map height="130px" />
+                <Map height="170px" />
               </div>
               <motion.button
                 whileHover={{ scale: 1.05 }}
