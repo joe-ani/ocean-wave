@@ -159,7 +159,7 @@ const page = () => {
             animate={{ rotate: isFilterOpen ? 180 : 0 }}
             transition={{ duration: 0.3 }}
           >
-            <Image
+            <Image 
               width={20}
               height={20}
               src="/icons/dropdown.png"
