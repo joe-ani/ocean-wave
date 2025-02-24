@@ -9,6 +9,12 @@ export default function ContactPage() {
   const router = useRouter();
   const targetLocation = { lat: 6.456559134970387, lng: 3.3842979366622847 };
 
+  const handleGetDirections = () => {
+    if (typeof window !== 'undefined') {
+      window.open(`https://www.google.com/maps/search/?api=1&query=${targetLocation.lat},${targetLocation.lng}`);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center bg-white text-[#333333] p-4 pt-32 sm:pt-44">
       <div className="w-full max-w-6xl">
@@ -58,7 +64,7 @@ export default function ContactPage() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.9 }}
-            onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${targetLocation.lat},${targetLocation.lng}`)}
+            onClick={handleGetDirections}
             className="flex items-center justify-center space-x-2 mx-auto bg-[#333333] text-white 
             py-3 px-8 rounded-md hover:opacity-90 transition-opacity text-base sm:text-lg"
           >
