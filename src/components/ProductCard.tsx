@@ -1,10 +1,9 @@
 "use client"
 import { motion, useInView } from 'framer-motion';
 import Image from 'next/image';
-import Link from 'next/link';
 import { Heart, TrendingUp } from 'lucide-react';
 import { useRef, useState } from 'react';
-import { Product } from '@/data/products';
+import { Product } from '@/src/data/products';
 import { useRouter } from 'next/navigation';
 
 const cardVariants = {
