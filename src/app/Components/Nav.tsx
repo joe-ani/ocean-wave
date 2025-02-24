@@ -131,15 +131,35 @@ const Nav = () => {
     })
   };
 
+  // Add useEffect for click away listener
+  useEffect(() => {
+    const handleClickAway = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      const menu = document.getElementById('mobile-menu');
+      const hamburger = document.getElementById('hamburger-button');
+
+      if (menu && hamburger &&
+        !menu.contains(target) &&
+        !hamburger.contains(target) &&
+        isMenuOpen) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickAway);
+    return () => document.removeEventListener('mousedown', handleClickAway);
+  }, [isMenuOpen]);
+
   return (
     <nav className={`fixed top-0 w-full z-[100] bg-[#111111] text-white p-6 transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"}`}>
-      {/* Overlay when mobile menu is open */}
+      {/* Overlay with fade effect */}
       {isMenuOpen && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black bg-opacity-50 z-40"
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 backdrop-blur-sm"
           onClick={() => setIsMenuOpen(false)}
         />
       )}
@@ -218,8 +238,13 @@ const Nav = () => {
 
             {/* Mobile menu button - adjusted size */}
             <div className="md:hidden flex items-center">
-              <button className="text-white focus:outline-none" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                <svg
+              <button
+                id="hamburger-button"
+                className="text-white focus:outline-none"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                <motion.svg
+                  animate={isMenuOpen ? "open" : "closed"}
                   className="w-6 h-6"
                   fill="none"
                   stroke="currentColor"
@@ -231,8 +256,8 @@ const Nav = () => {
                     strokeLinejoin="round"
                     strokeWidth="2"
                     d={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16m-7 6h7"}
-                  ></path>
-                </svg>
+                  />
+                </motion.svg>
               </button>
             </div>
           </div>
@@ -240,9 +265,30 @@ const Nav = () => {
 
         {/* Mobile menu */}
         <motion.div
+          id="mobile-menu"
           initial="closed"
           animate={isMenuOpen ? "open" : "closed"}
-          variants={mobileMenuVariants}
+          variants={{
+            open: {
+              opacity: 1,
+              y: 0,
+              transition: {
+                duration: 0.3,
+                ease: [0.4, 0, 0.2, 1],
+                staggerChildren: 0.1
+              }
+            },
+            closed: {
+              opacity: 0,
+              y: "-100%",
+              transition: {
+                duration: 0.3,
+                ease: [0.4, 0, 0.2, 1],
+                staggerChildren: 0.05,
+                staggerDirection: -1
+              }
+            }
+          }}
           className="fixed top-0 left-0 w-full bg-[#111111] z-40 md:hidden"
         >
           {/* Mobile Header */}
@@ -274,10 +320,11 @@ const Nav = () => {
           {/* Mobile Menu Content */}
           <div className="pt-8 pb-8 px-8 flex flex-col items-center gap-8">
             {/* Mobile Search */}
-            <motion.div
+            <motion.form
               variants={menuItemVariants}
               custom={0}
               className="relative w-full max-w-[280px]"
+              onSubmit={handleSearch}
             >
               <input
                 type="text"
@@ -287,12 +334,12 @@ const Nav = () => {
                 placeholder="Search products..."
               />
               <button
-                onClick={handleSearch}
+                type="submit"
                 className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2"
               >
                 <Image width={16} height={16} src="/icons/search2.png" alt="search" />
               </button>
-            </motion.div>
+            </motion.form>
 
             {/* Navigation Links */}
             <div className="flex flex-col items-center gap-8 w-full">

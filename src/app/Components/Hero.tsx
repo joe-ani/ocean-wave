@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { useActiveLink } from "../context/ActiveLinkContext";
 import { useRouter } from "next/navigation";
 
@@ -15,6 +15,9 @@ const Hero = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [showSearch, setShowSearch] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
+    const dropIconRef = useRef<HTMLDivElement>(null);
+    const actionsRef = useRef<HTMLDivElement>(null);
+    const [isOverlapping, setIsOverlapping] = useState(false);
 
     useEffect(() => {
         setIsMounted(true);
@@ -58,6 +61,39 @@ const Hero = () => {
         setShowSearch(false);
         setSearchQuery("");
     };
+
+    const checkOverlap = useCallback(() => {
+        if (!isMounted || typeof window === 'undefined') return;
+
+        const dropIcon = dropIconRef.current;
+        const actions = actionsRef.current;
+
+        if (dropIcon && actions && window.innerWidth < 768) { // Only check on mobile
+            const dropRect = dropIcon.getBoundingClientRect();
+            const actionsRect = actions.getBoundingClientRect();
+
+            // Check if the drop icon overlaps with the actions section
+            const isOverlapping = !(
+                dropRect.top > actionsRect.bottom ||
+                dropRect.bottom < actionsRect.top
+            );
+
+            setIsOverlapping(isOverlapping);
+        }
+    }, [isMounted]);
+
+    useEffect(() => {
+        if (!isMounted || typeof window === 'undefined') return;
+
+        checkOverlap();
+        window.addEventListener('resize', checkOverlap);
+        window.addEventListener('scroll', checkOverlap);
+
+        return () => {
+            window.removeEventListener('resize', checkOverlap);
+            window.removeEventListener('scroll', checkOverlap);
+        };
+    }, [checkOverlap, isMounted]);
 
     // framer motion variants --------
     const heroTextVariants = {
@@ -199,10 +235,11 @@ const Hero = () => {
                 >
                     <div className="pt-32 pb-8 px-8 flex flex-col items-center gap-8">
                         {/* Mobile Search - Centered */}
-                        <motion.div
+                        <motion.form
                             variants={menuItemVariants}
                             custom={0}
                             className="relative w-full max-w-[280px]"
+                            onSubmit={handleSearch}
                         >
                             <input
                                 type="text"
@@ -212,12 +249,12 @@ const Hero = () => {
                                 placeholder="Search products..."
                             />
                             <button
-                                onClick={handleSearch}
+                                type="submit"
                                 className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2"
                             >
                                 <Image width={16} height={16} src="/icons/search2.png" alt="search" />
                             </button>
-                        </motion.div>
+                        </motion.form>
 
                         {/* Navigation Links - Centered with dots */}
                         <div className="flex flex-col items-center gap-8 w-full">
@@ -339,7 +376,7 @@ const Hero = () => {
                     <p className="pt-8 text-[14px] md:text-[20px] w-[80%] mx-0 font-normal">
                         &quot;We offer all types of premium and high-quality wigs.&quot;
                     </p>
-                    <div className="quickact flex space-x-5 md:flex-row space-y-3 md:space-y-0 md:space-x-3 py-4 items-start md:items-center">
+                    <div ref={actionsRef} className="quickact flex space-x-5 md:flex-row space-y-3 md:space-y-0 md:space-x-3 py-4 items-start md:items-center">
                         <Link href={"/shop"} onClick={() => setActiveLink("Shop")}>
                             <motion.button
                                 whileHover={{ scale: 1.1 }}
@@ -397,13 +434,15 @@ const Hero = () => {
                 </motion.div>
             </div>
 
-            {/* Scroll Button - Original position */}
-            <div className="absolute bottom-10">
+            {/* Updated Scroll Button with visibility control */}
+            <div className={`absolute bottom-10 transition-opacity duration-300 ${isOverlapping ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
                 <Link href={"#section1"}>
                     <motion.div
+                        ref={dropIconRef}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
-                        className="w-10 h-10 md:w-14 md:h-14 border-[#feef88] border md:border-2 rounded-full cursor-pointer flex items-center justify-center">
+                        className="w-10 h-10 md:w-14 md:h-14 border-[#feef88] border md:border-2 rounded-full cursor-pointer flex items-center justify-center"
+                    >
                         <Image width={20} height={20} alt="arrow down" src="/icons/drop.png" />
                     </motion.div>
                 </Link>
