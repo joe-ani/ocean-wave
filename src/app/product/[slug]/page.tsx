@@ -9,7 +9,7 @@ import Footer from '../../Components/Footer';
 import Skeleton from '@/src/components/Skeleton';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
-import { sendWhatsAppMessage } from '@/src/utils/whatsapp';
+import { sendWhatsAppMessage } from '@/src/utils/client/whatsapp';
 import { useClient } from '@/src/hooks/useClient';
 
 interface ProductType {
