@@ -29,21 +29,21 @@ const HomePage = () => {
   };
 
   return (
-    <div className="font-black t justify-center items-center overflow-x-hidden">
+    <div className="font-[600] justify-center items-center overflow-x-hidden">
       <Nav />
       <Hero />
       {/* ----------- */}
       {/* section 1 */}
       <div id="section1" className="flex flex-col px-0 md:px-40 pt-28 sm:pt-40 pb-4 text-[#333333]">
-        <h2 className="text-xs md:text-sm font-medium px-5 md:px-0">HERE's</h2>
-        <h1 className="text-2xl md:text-4xl font-semibold py-2 px-5 md:px-0">What we offer.</h1>
+        <h2 className="text-xs md:text-sm font-[500] px-5 md:px-0">HERE's</h2>
+        <h1 className="text-2xl md:text-4xl font-[600] py-2 px-5 md:px-0">What we offer.</h1>
         {/* card component*/}
         <div className="py-20">
           <Offer />
         </div>
       </div>
       {/* section 2 */}
-      <div id="section3" className="flex flex-col font-semibold px-0 md:px-40 py-2 text-[#333333]">
+      <div id="section3" className="flex flex-col font-[600] px-0 md:px-40 py-2 text-[#333333]">
         <h2 className="text-xs md:text-sm font-medium px-5 md:px-0">Opening hours</h2>
         <h1 className="text-2xl md:text-4xl py-2 px-5 md:px-0">Our Opening Hours.</h1>
         {/* card component*/}
@@ -54,7 +54,7 @@ const HomePage = () => {
       {/* section 3 */}
       <div className="flex flex-col px-0 md:px-40 py-2 text-[#333333]">
         <h2 className="text-xs md:text-sm font-medium px-5 md:px-0">CHECK OUT</h2>
-        <h1 className="text-2xl md:text-4xl font-semibold py-2 px-5 md:px-0">Our Latest Product.</h1>
+        <h1 className="text-2xl md:text-4xl font-[600] py-2 px-5 md:px-0">Our Latest Product.</h1>
         {/* card component*/}
         <div className="py-20">
           {/* NOTE: parse product data here. will be stored in an object array */}
@@ -62,7 +62,7 @@ const HomePage = () => {
         </div>
       </div>
       {/* section 4 */}
-      <div className="flex flex-col font-semibold px-0 md:px-40 py-2 text-[#333333]">
+      <div className="flex flex-col font-[600] px-0 md:px-40 py-2 text-[#333333]">
         <h2 className="text-xs md:text-sm font-medium px-5 md:px-0">Shop</h2>
         <h1 className="text-2xl md:text-4xl py-2 px-5 md:px-0">By Categories.</h1>
         {/* card component*/}
@@ -71,7 +71,7 @@ const HomePage = () => {
         </div>
       </div>
       {/* section 5 */}
-      <div className="flex flex-col font-semibold px-0 md:px-40 py-2 text-[#333333]">
+      <div className="flex flex-col font-[600] px-0 md:px-40 py-2 text-[#333333]">
         <h2 className="text-xs md:text-sm font-medium px-5 md:px-0">What they say</h2>
         <h1 className="text-2xl md:text-4xl py-2 px-5 md:px-0">Customer Review.</h1>
         {/* card component*/}
@@ -80,7 +80,7 @@ const HomePage = () => {
         </div>
       </div>
       {/* section 6 */}
-      <div id="section6" className="flex flex-col font-semibold px-0 md:px-40 py-2 text-[#333333]">
+      <div id="section6" className="flex flex-col font-[600] px-0 md:px-40 py-2 text-[#333333]">
         <h2 className="text-xs md:text-sm px-5 md:px-0">About d'fugo hair</h2>
         <h1 className="text-2xl md:text-4xl py-2 px-5 md:px-0">Founder and CEO.</h1>
         {/* card component*/}
@@ -117,7 +117,7 @@ const HomePage = () => {
             </button>
 
             {/* Modal Content */}
-            <h2 className="text-base sm:text-xl font-bold mb-3 sm:mb-4 text-center text-[#333333]">Send a WhatsApp Message</h2>
+            <h2 className="text-base sm:text-xl font-[700] mb-3 sm:mb-4 text-center text-[#333333]">Send a WhatsApp Message</h2>
             <textarea
               className="text-[#333] text-sm w-full p-2 sm:p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#CFAA3D] resize-none"
               rows={4}

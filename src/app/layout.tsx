@@ -1,30 +1,8 @@
 import type { Metadata } from "next";
 import { Geist_Mono } from "next/font/google";
-import localFont from 'next/font/local';
 import "./globals.css";
 import Nav from "./Components/Nav";
 import { ActiveLinkProvider } from "./context/ActiveLinkContext";
-
-const clashDisplay = localFont({
-  src: [
-    {
-      path: '../fonts/ClashDisplay-Regular.woff2',
-      weight: '400',
-      style: 'normal',
-    },
-    {
-      path: '../fonts/ClashDisplay-Medium.woff2',
-      weight: '500',
-      style: 'normal',
-    },
-    {
-      path: '../fonts/ClashDisplay-Bold.woff2',
-      weight: '700',
-      style: 'normal',
-    },
-  ],
-  variable: '--font-clash-display'
-});
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -43,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistMono.variable} ${clashDisplay.variable} font-clash-display antialiased`}>
+      <body className={`${geistMono.variable} font-[600] antialiased`}>
         <ActiveLinkProvider>
           {/* Nav */}
           <Nav />

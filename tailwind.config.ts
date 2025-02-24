@@ -11,6 +11,13 @@ export default {
       fontFamily: {
         "clash-display": ["Clash Display", "sans-serif"],
       },
+      fontWeight: {
+        light: "300",
+        normal: "400",
+        medium: "500",
+        semibold: "600",
+        bold: "700",
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
