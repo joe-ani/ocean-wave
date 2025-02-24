@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #ffffff;
+    --foreground: #ededed;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Clash Display;
+}
+
+.highlight-box {
+  background: #c4c4c434;
+  backdrop-filter: blur(0.8em);
+  border: 1px solid #feef88;
+  position: absolute;
+  top: 10px;
+  right: -40px;
+  margin-left: 30px;
+}
+
+
+.fade-boundary {
+  background-image: linear-gradient(to top, #111111, #11111100);
+  position: absolute;
+  width: 100%;
+  height: 70px;
+  bottom: -1px;
+  z-index: 10;
+}
+
+.hero::before {
+  content: "";
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background: radial-gradient(circle, #feef88, #feef88, #feee88);
+  box-shadow: 0 0 200px #feef88, 0 0 100px #feef88, 0 0 800px #feef88;
+  width: 80px;
+  height: 80px;
+  border-radius: 100%;
+  filter: blur(8rem);
+}
+
+
+
+.hero::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0px;
+  background: radial-gradient(circle, #feef88, #feef88, #feee88);
+  box-shadow: 0 0 200px #feef88, 0 0 100px #feef88, 0 0 800px #feef88;
+  width: 80px;
+  height: 80px;
+  border-radius: 100%;
+  filter: blur(8rem);
+}
+
+.price-card {
+  background: #9696967a;
+  backdrop-filter: blur(0.3em);
+}
+
+
+.latest-product-card {
+  background: linear-gradient(to bottom, #dddddd, #b2b2b2);
+}
