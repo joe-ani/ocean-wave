@@ -16,7 +16,7 @@ const Review = () => {
     }, []);
 
     useEffect(() => {
-        if (!isMounted) return;
+        if (!isMounted || typeof window === 'undefined') return;
 
         const handleResize = () => {
             setWindowWidth(window.innerWidth);

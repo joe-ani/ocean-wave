@@ -25,7 +25,7 @@ const OpeningHours = () => {
   }, [controls, inView]);
 
   const handleGetDirections = () => {
-    if (!isMounted) return;
+    if (!isMounted || typeof window === 'undefined') return;
     window?.open(`https://www.google.com/maps/search/?api=1&query=6.456559134970387,3.3842979366622847`);
   };
 

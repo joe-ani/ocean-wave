@@ -24,7 +24,7 @@ const HomePage = () => {
   }, []);
 
   const openWhatsApp = () => {
-    if (!isMounted) return;
+    if (!isMounted || typeof window === 'undefined') return;
 
     if (message.trim() !== "") {
       const encodedMessage = encodeURIComponent(message);

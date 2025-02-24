@@ -1,10 +1,18 @@
 "use client"
 import { motion } from "framer-motion"
-import { useState, useEffect } from "react"
 import Image from "next/image"
 import { ArrowLeft } from "lucide-react"
 import { useRouter } from "next/navigation"
-import Map from '../Components/Map'
+import { useState, useEffect } from "react"
+import dynamic from 'next/dynamic'
+
+// Dynamically import Map component with no SSR
+const Map = dynamic(() => import('../Components/Map'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full bg-gray-100 animate-pulse rounded-2xl" />
+  )
+})
 
 export default function ContactPage() {
   const router = useRouter();
@@ -16,7 +24,7 @@ export default function ContactPage() {
   }, []);
 
   const handleGetDirections = () => {
-    if (!isMounted) return;
+    if (!isMounted || typeof window === 'undefined') return;
 
     const url = `https://www.google.com/maps/search/?api=1&query=${targetLocation.lat},${targetLocation.lng}`;
     window?.open(url);

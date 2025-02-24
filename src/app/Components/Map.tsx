@@ -24,22 +24,20 @@ const createIcon = () => L.icon({
 
 // Scroll zoom controller component
 const ScrollZoomController = () => {
-  const map = useMap();
   const [isMounted, setIsMounted] = useState(false);
+  const map = useMap();
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
   useEffect(() => {
-    if (!isMounted) return;
+    if (!isMounted || typeof window === 'undefined') return;
 
     const handleScroll = () => {
-      if (typeof window === 'undefined') return;
-
       const mapElement = map.getContainer();
+      const viewportHeight = window?.innerHeight || 0;
       const rect = mapElement.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
       const elementCenter = rect.top + rect.height / 2;
       const viewportCenter = viewportHeight / 2;
       const distanceFromCenter = Math.abs(elementCenter - viewportCenter) / viewportHeight;
@@ -64,8 +62,7 @@ const Map = ({ height = '170px', className = '' }: MapProps) => {
 
   useEffect(() => {
     setIsMounted(true);
-
-    if (!isMounted) return;
+    if (!isMounted || typeof window === 'undefined') return;
 
     // Initialize Leaflet icons
     delete (L.Icon.Default.prototype as any)._getIconUrl;
