@@ -42,7 +42,7 @@ const ScrollZoomController = () => {
   return null;
 };
 
-const Map: React.FC<MapProps> = ({ height = '170px', className = '' }) => {
+const Map: React.FC<MapProps> = ({ height = '150px', className = '' }) => {
   const targetLocation: [number, number] = [6.456559134970387, 3.3842979366622847];
   const [mapIcon, setMapIcon] = useState<L.Icon | null>(null);
 
@@ -62,11 +62,16 @@ const Map: React.FC<MapProps> = ({ height = '170px', className = '' }) => {
   }, []);
 
   return (
-    <div style={{ height, width: '100%' }} className={className}>
+    <div style={{ height, width: '100%', position: 'relative', zIndex: 0 }} className={className}>
       <MapContainer
         center={targetLocation}
         zoom={15}
-        style={{ height: '100%', width: '100%', borderRadius: '15px' }}
+        style={{
+          height: '100%',
+          width: '100%',
+          borderRadius: '15px',
+          zIndex: 0,
+        }}
         zoomControl={true}
         scrollWheelZoom={true}
       >
@@ -77,6 +82,35 @@ const Map: React.FC<MapProps> = ({ height = '170px', className = '' }) => {
         {mapIcon && <Marker position={targetLocation} icon={mapIcon} />}
         <ScrollZoomController />
       </MapContainer>
+      <style jsx global>{`
+        .leaflet-pane,
+        .leaflet-tile,
+        .leaflet-marker-icon,
+        .leaflet-marker-shadow,
+        .leaflet-tile-container,
+        .leaflet-map-pane svg,
+        .leaflet-map-pane canvas,
+        .leaflet-zoom-box,
+        .leaflet-image-layer,
+        .leaflet-layer {
+          z-index: 1 !important;
+        }
+        .leaflet-overlay-pane {
+          z-index: 2 !important;
+        }
+        .leaflet-marker-pane {
+          z-index: 3 !important;
+        }
+        .leaflet-tooltip-pane {
+          z-index: 4 !important;
+        }
+        .leaflet-popup-pane {
+          z-index: 5 !important;
+        }
+        .leaflet-control {
+          z-index: 6 !important;
+        }
+      `}</style>
     </div>
   );
 };

@@ -99,23 +99,158 @@ const Hero = () => {
             transition: { duration: 1, ease: "easeOut", delay: 0.6 },
         },
     };
-    // ---------------------------------
+
+    const menuVariants = {
+        open: {
+            height: "auto",
+            opacity: 1,
+            transition: {
+                duration: 0.4,
+                ease: "easeInOut"
+            }
+        },
+        closed: {
+            height: 0,
+            opacity: 0,
+            transition: {
+                duration: 0.4,
+                ease: "easeInOut"
+            }
+        }
+    };
+
+    const mobileMenuVariants = {
+        closed: {
+            opacity: 0,
+            y: "-100%",
+            transition: {
+                duration: 0.3,
+                ease: [0.4, 0, 0.2, 1],
+            }
+        },
+        open: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.3,
+                ease: [0.4, 0, 0.2, 1],
+            }
+        }
+    };
+
+    const menuItemVariants = {
+        closed: { opacity: 0, y: -20 },
+        open: (i: number) => ({
+            opacity: 1,
+            y: 0,
+            transition: {
+                delay: i * 0.1,
+                duration: 0.4,
+                ease: [0.4, 0, 0.2, 1],
+            }
+        })
+    };
 
     return (
         <div className="hero bg-[#111111] h-screen flex flex-col justify-center items-center">
-            {/* blur layer */}
+            {/* Overlay when mobile menu is open */}
+            {menuOpen && (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                    onClick={() => setMenuOpen(false)}
+                />
+            )}
+
             <div className="cont1 w-full flex flex-col md:flex-row justify-around items-center px-8 md:px-20 lg:px-40 pb-8 pt-0 md:pt-20">
-                {/* hero nav */}
-                <div className="logo  md:mb-0 flex justify-between w-full md:w-auto">
+                <div className="logo md:mb-0 flex justify-between w-full md:w-auto items-center relative z-50">
                     <Image className="w-32 h-auto md:w-52" width={200} height={100} alt="Dfugo logo" src="/logo.png" />
-                    <div className="md:hidden flex items-center">
-                        <button onClick={() => setMenuOpen(!menuOpen)} className="text-white">
-                            <Image width={30} height={30} src="/icons/hamburger.png" alt="menu icon" />
-                        </button>
-                    </div>
+
+                    {/* Nav-style Hamburger Button */}
+                    <button
+                        className="text-white md:hidden focus:outline-none z-50"
+                        onClick={() => setMenuOpen(!menuOpen)}
+                    >
+                        <svg
+                            className="w-6 h-6"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d={menuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16m-7 6h7"}
+                            ></path>
+                        </svg>
+                    </button>
                 </div>
-                {/* main hero nav */}
-                <div className={`flex-col md:flex-row gap-8 ${menuOpen ? 'flex' : 'hidden'} md:flex`}>
+
+                {/* Updated Mobile Menu with centered items and dots */}
+                <motion.div
+                    initial="closed"
+                    animate={menuOpen ? "open" : "closed"}
+                    variants={mobileMenuVariants}
+                    className="fixed top-0 left-0 w-full bg-[#111111] z-40 md:hidden"
+                >
+                    <div className="pt-32 pb-8 px-8 flex flex-col items-center gap-8">
+                        {/* Mobile Search - Centered */}
+                        <motion.div
+                            variants={menuItemVariants}
+                            custom={0}
+                            className="relative w-full max-w-[280px]"
+                        >
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full px-6 py-3 rounded-full bg-[#ffffff10] text-white focus:outline-none focus:ring-2 focus:ring-[#FEEF88] transition-all text-center"
+                                placeholder="Search products..."
+                            />
+                            <button
+                                onClick={handleSearch}
+                                className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2"
+                            >
+                                <Image width={16} height={16} src="/icons/search2.png" alt="search" />
+                            </button>
+                        </motion.div>
+
+                        {/* Navigation Links - Centered with dots */}
+                        <div className="flex flex-col items-center gap-8 w-full">
+                            {["Home", "Shop", "Contact", "About"].map((link, i) => (
+                                <motion.div
+                                    key={link}
+                                    variants={menuItemVariants}
+                                    custom={i + 1}
+                                    className="relative flex flex-col items-center"
+                                >
+                                    <button
+                                        onClick={() => handleNavClick(link)}
+                                        className={`text-center text-lg font-medium py-2 px-4 ${activeLink === link ? "text-[#FEEF88]" : "text-white"
+                                            }`}
+                                    >
+                                        {link}
+                                    </button>
+                                    {activeLink === link && (
+                                        <motion.div
+                                            className="absolute -bottom-2 bg-[#fee88e] w-[6px] h-[6px] rounded-full"
+                                            initial={{ scale: 0 }}
+                                            animate={{ scale: 1 }}
+                                            transition={{ duration: 0.2 }}
+                                        />
+                                    )}
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+                </motion.div>
+
+                {/* Desktop Navigation */}
+                <div className="hidden md:flex">
                     <div className="flex flex-col items-center">
                         {/* Nav items and search container */}
                         <div className="flex items-center space-x-8 relative">
@@ -186,9 +321,10 @@ const Hero = () => {
                     </div>
                 </div>
             </div>
-            {/* Header section */}
+
+            {/* Main Content Section - Reverted to original styling */}
             <div className="cont2 w-full flex flex-col-reverse md:flex-row justify-around items-center px-8 md:px-20 lg:px-40 pb-10 mb-11 pt-28 mb:pt-0">
-                {/* Header texts  */}
+                {/* Hero Text Section - Original styling */}
                 <div className="hero-text text-left pt-28 md:pt-0">
                     <p className="py-3 font-normal text-sm md:text-base">D'Fugo Hair</p>
                     <div className="w-[60%] h-[1px] bg-gradient-to-r from-[#FEEF88] to-transparent rounded-full mx-0"></div>
@@ -224,7 +360,7 @@ const Hero = () => {
                     </div>
                 </div>
 
-                {/* Highlight animation */}
+                {/* Highlight Section - Original position */}
                 <motion.div
                     variants={highlightVariants}
                     initial="hidden"
@@ -236,7 +372,8 @@ const Hero = () => {
                         <div className="bg-[#FEEF88] rounded-full w-full h-full absolute top-0"></div>
                         <div className="fade-boundary"></div>
                     </motion.div>
-                    {/* highlight container */}
+
+                    {/* Highlight container */}
                     <motion.div
                         variants={cardVariants}
                         className="w-[170px] md:w-[200px] highlight-box rounded-[16px] p-[14px] md:p-[20px] md:rounded-[30px] z-10 space-y-2 md:space-y-4 absolute flex flex-col top-[-120px] md:top-[0px]">
@@ -260,16 +397,18 @@ const Hero = () => {
                 </motion.div>
             </div>
 
-            {/* scroll button */}
-            <Link className="absolute bottom-10" href={"#section1"}>
-                <motion.div
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="w-10 h-10 md:w-14 md:h-14 border-[#feef88] border md:border-2 rounded-full cursor-pointer flex items-center justify-center">
-                    <Image width={20} height={20} alt="arrow down" src="/icons/drop.png" />
-                </motion.div>
-            </Link>
-        </div >
+            {/* Scroll Button - Original position */}
+            <div className="absolute bottom-10">
+                <Link href={"#section1"}>
+                    <motion.div
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        className="w-10 h-10 md:w-14 md:h-14 border-[#feef88] border md:border-2 rounded-full cursor-pointer flex items-center justify-center">
+                        <Image width={20} height={20} alt="arrow down" src="/icons/drop.png" />
+                    </motion.div>
+                </Link>
+            </div>
+        </div>
     );
 };
 

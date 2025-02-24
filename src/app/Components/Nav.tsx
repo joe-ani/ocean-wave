@@ -98,17 +98,61 @@ const Nav = () => {
     setSearchQuery("");
   };
 
+  // Add these variants for the mobile menu animations
+  const mobileMenuVariants = {
+    closed: {
+      opacity: 0,
+      y: "-100%",
+      transition: {
+        duration: 0.3,
+        ease: [0.4, 0, 0.2, 1],
+      }
+    },
+    open: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.3,
+        ease: [0.4, 0, 0.2, 1],
+      }
+    }
+  };
+
+  const menuItemVariants = {
+    closed: { opacity: 0, y: -20 },
+    open: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: i * 0.1,
+        duration: 0.4,
+        ease: [0.4, 0, 0.2, 1],
+      }
+    })
+  };
+
   return (
     <nav className={`fixed top-0 w-full z-[100] bg-[#111111] text-white p-6 transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"}`}>
+      {/* Overlay when mobile menu is open */}
+      {isMenuOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black bg-opacity-50 z-40"
+          onClick={() => setIsMenuOpen(false)}
+        />
+      )}
+
       <div className="container mx-auto">
         <div className="flex justify-between items-center">
-          {/* Logo */}
+          {/* Logo - adjusted size */}
           <Link href={"/"}>
             <Image src="/logo.png" alt="Logo" width={100} height={50} />
           </Link>
 
           <div className="flex items-center space-x-8">
-            {/* Nav items with fade animation */}
+            {/* Nav items - adjusted spacing */}
             <motion.ul
               animate={{ opacity: showSearch ? 0 : 1 }}
               transition={{ duration: 0.2 }}
@@ -133,7 +177,7 @@ const Nav = () => {
               ))}
             </motion.ul>
 
-            {/* Search container */}
+            {/* Search container - adjusted sizing */}
             <div className="relative flex items-center z-[101]">
               <button
                 type="button"
@@ -149,7 +193,7 @@ const Nav = () => {
                 />
               </button>
 
-              {/* Inline search bar */}
+              {/* Inline search bar - adjusted size */}
               {showSearch && (
                 <motion.form
                   initial={{ opacity: 0, width: 0 }}
@@ -172,7 +216,7 @@ const Nav = () => {
               )}
             </div>
 
-            {/* Mobile menu button */}
+            {/* Mobile menu button - adjusted size */}
             <div className="md:hidden flex items-center">
               <button className="text-white focus:outline-none" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                 <svg
@@ -195,31 +239,90 @@ const Nav = () => {
         </div>
 
         {/* Mobile menu */}
-        {isMenuOpen && (
-          <div className="md:hidden mt-4">
-            <ul className="list-none flex flex-col items-center space-y-4 font-medium">
-              {["Home", "Shop", "Contact", "About"].map((link) => (
-                <li
+        <motion.div
+          initial="closed"
+          animate={isMenuOpen ? "open" : "closed"}
+          variants={mobileMenuVariants}
+          className="fixed top-0 left-0 w-full bg-[#111111] z-40 md:hidden"
+        >
+          {/* Mobile Header */}
+          <div className="flex justify-between items-center px-8 pt-6 pb-4 border-b border-[#ffffff20]">
+            <Link href={"/"}>
+              <Image src="/logo.png" alt="Logo" width={100} height={50} />
+            </Link>
+            <button
+              className="text-white focus:outline-none p-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
+              </svg>
+            </button>
+          </div>
+
+          {/* Mobile Menu Content */}
+          <div className="pt-8 pb-8 px-8 flex flex-col items-center gap-8">
+            {/* Mobile Search */}
+            <motion.div
+              variants={menuItemVariants}
+              custom={0}
+              className="relative w-full max-w-[280px]"
+            >
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full px-6 py-3 rounded-full bg-[#ffffff10] text-white focus:outline-none focus:ring-2 focus:ring-[#FEEF88] transition-all text-center"
+                placeholder="Search products..."
+              />
+              <button
+                onClick={handleSearch}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2"
+              >
+                <Image width={16} height={16} src="/icons/search2.png" alt="search" />
+              </button>
+            </motion.div>
+
+            {/* Navigation Links */}
+            <div className="flex flex-col items-center gap-8 w-full">
+              {["Home", "Shop", "Contact", "About"].map((link, i) => (
+                <motion.div
                   key={link}
-                  className={`relative cursor-pointer flex flex-col items-center ${activeLink === link ? "text-[#FEEF88]" : ""}`}
-                  onClick={() => {
-                    handleNavClick(link);
-                  }}
+                  variants={menuItemVariants}
+                  custom={i + 1}
+                  className="relative flex flex-col items-center"
                 >
-                  <div>{link}</div>
+                  <button
+                    onClick={() => handleNavClick(link)}
+                    className={`text-center text-lg font-medium py-2 px-4 ${activeLink === link ? "text-[#FEEF88]" : "text-white"
+                      }`}
+                  >
+                    {link}
+                  </button>
                   {activeLink === link && (
                     <motion.div
-                      className="absolute top-8 bg-[#fee88e] w-[10px] h-[10px] rounded-full"
+                      className="absolute -bottom-2 bg-[#fee88e] w-[6px] h-[6px] rounded-full"
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ duration: 0.2 }}
-                    ></motion.div>
+                    />
                   )}
-                </li>
+                </motion.div>
               ))}
-            </ul>
+            </div>
           </div>
-        )}
+        </motion.div>
       </div>
     </nav>
   );
