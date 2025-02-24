@@ -8,6 +8,9 @@ import { Heart, ArrowLeft, TrendingUp } from "lucide-react";
 import Footer from '../../Components/Footer';
 import Skeleton from '@/src/components/Skeleton';
 import { motion } from 'framer-motion';
+import { toast } from 'react-hot-toast';
+import { sendWhatsAppMessage } from '@/src/utils/whatsapp';
+import { useClient } from '@/src/hooks/useClient';
 
 interface ProductType {
     name: string;
@@ -18,6 +21,7 @@ interface ProductType {
 }
 
 export default function ProductPage() {
+    const isClient = useClient();
     const params = useParams();
     const router = useRouter();
     const [isLiked, setIsLiked] = useState(false);
@@ -42,6 +46,28 @@ export default function ProductPage() {
             console.error('Error loading product:', error);
         }
     }, [params?.slug]);
+
+    const handleOrder = () => {
+        if (!isClient || !product) return;
+
+        toast.loading('Opening WhatsApp...', {
+            duration: 1500,
+        });
+
+        const success = sendWhatsAppMessage(product.name, product.img);
+
+        if (success) {
+            toast.success('Redirecting to WhatsApp...', {
+                duration: 2000,
+                position: 'bottom-center',
+            });
+        } else {
+            toast.error('Failed to open WhatsApp. Please try again.', {
+                duration: 3000,
+                position: 'bottom-center',
+            });
+        }
+    };
 
     if (!product) {
         return (
@@ -153,6 +179,7 @@ export default function ProductPage() {
                                     whileTap={{ scale: 0.98 }}
                                     className="bg-[#333333] text-white py-3 px-6 rounded-md hover:opacity-90 
                                     transition-opacity text-base sm:text-lg"
+                                    onClick={handleOrder}
                                 >
                                     Order Now
                                 </motion.button>

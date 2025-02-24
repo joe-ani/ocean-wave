@@ -9,11 +9,11 @@ interface MapProps {
   className?: string;
 }
 
-// Custom marker icon with proper assets
-const icon = L.icon({
-  iconUrl: '/icons/marker-icon.png',
-  iconRetinaUrl: '/icons/marker-icon-2x.png',
-  shadowUrl: '/icons/marker-shadow.png',
+// Create marker icon configuration
+const createIcon = () => L.icon({
+  iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
@@ -21,9 +21,6 @@ const icon = L.icon({
   shadowAnchor: [12, 41],
   className: 'marker-bounce'
 });
-
-// Default icon setup for all markers
-L.Marker.prototype.options.icon = icon;
 
 // Scroll zoom controller component
 const ScrollZoomController = () => {
@@ -55,8 +52,16 @@ const ScrollZoomController = () => {
 const Map = ({ height = '170px', className = '' }: MapProps) => {
   const targetLocation: [number, number] = [6.456559134970387, 3.3842979366622847];
 
-  // Inject custom styles
   useEffect(() => {
+    // Initialize Leaflet icons
+    delete (L.Icon.Default.prototype as any)._getIconUrl;
+    L.Icon.Default.mergeOptions({
+      iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+      iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
+      shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+    });
+
+    // Add styles
     const style = document.createElement('style');
     style.textContent = `
       .marker-bounce {
@@ -95,6 +100,9 @@ const Map = ({ height = '170px', className = '' }: MapProps) => {
       .leaflet-control-zoom a:hover {
         background: rgba(255,255,255,0.1) !important;
       }
+      .leaflet-marker-icon {
+        filter: brightness(1.2);
+      }
     `;
     document.head.appendChild(style);
     return () => {
@@ -131,7 +139,7 @@ const Map = ({ height = '170px', className = '' }: MapProps) => {
         />
         <Marker
           position={targetLocation}
-          icon={icon}
+          icon={createIcon()}
         />
         <ScrollZoomController />
       </MapContainer>

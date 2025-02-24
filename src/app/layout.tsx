@@ -3,6 +3,7 @@ import { Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Nav from "./Components/Nav";
 import { ActiveLinkProvider } from "./context/ActiveLinkContext";
+import { Toaster } from 'react-hot-toast';
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -27,6 +28,7 @@ export default function RootLayout({
           <Nav />
           {children}
           {/* Footer */}
+          <Toaster />
         </ActiveLinkProvider>
       </body>
     </html>
