@@ -131,19 +131,24 @@ const Nav = () => {
     })
   };
 
-  // Update the click-away handler to check for search input
+  // Updated click handler with better area detection
   useEffect(() => {
     const handleClickAway = (event: MouseEvent) => {
       if (!isMenuOpen) return;
 
       const target = event.target as HTMLElement;
-      const menu = document.getElementById('mobile-menu-container');
-      const hamburger = document.getElementById('hamburger-button');
-      const isClickInsideMenu = menu?.contains(target);
-      const isClickOnHamburger = hamburger?.contains(target);
+      const mobileMenu = document.getElementById('mobile-menu-container');
+      const hamburgerButton = document.getElementById('hamburger-button');
+      const searchForm = document.getElementById('mobile-search-form');
+
+      // Check if click is within any of our menu components
+      const isClickInMenu = mobileMenu?.contains(target);
+      const isClickOnButton = hamburgerButton?.contains(target);
+      const isClickInSearch = searchForm?.contains(target);
       const isClickOnOverlay = target.classList.contains('menu-overlay');
 
-      if (!isClickInsideMenu && !isClickOnHamburger || isClickOnOverlay) {
+      // Only close if clicking outside all menu components and on overlay
+      if ((!isClickInMenu && !isClickOnButton && !isClickInSearch) && isClickOnOverlay) {
         setIsMenuOpen(false);
       }
     };
@@ -154,15 +159,14 @@ const Nav = () => {
 
   return (
     <>
-      {/* Dark overlay separate from nav */}
+      {/* Updated overlay */}
       {isMenuOpen && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[90]"
-          onClick={() => setIsMenuOpen(false)}
+          className="menu-overlay fixed inset-0 bg-black/70 backdrop-blur-sm z-[90]"
         />
       )}
 
@@ -329,14 +333,18 @@ const Nav = () => {
             </div>
 
             {/* Mobile Menu Content */}
-            <div className="pt-8 pb-8 px-8 flex flex-col items-center gap-8">
-              {/* Mobile Search */}
+            <div
+              className="pt-8 pb-8 px-8 flex flex-col items-center gap-8"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Updated Mobile Search Form */}
               <motion.form
                 id="mobile-search-form"
                 variants={menuItemVariants}
                 custom={0}
                 className="relative w-full max-w-[280px]"
                 onSubmit={handleSearch}
+                onClick={(e) => e.stopPropagation()}
               >
                 <input
                   type="text"
