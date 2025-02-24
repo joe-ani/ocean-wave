@@ -2,7 +2,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer"; // Hook to track when items are in view
 import { useRouter } from "next/navigation";
-import { CATEGORIES } from '@/data/categories';
+import { CATEGORIES } from '@/src/data/categories';
 
 // Update interface to include category id
 interface CategoryItemProps {

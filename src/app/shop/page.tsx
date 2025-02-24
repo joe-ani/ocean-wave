@@ -2,11 +2,11 @@
 import { motion } from "framer-motion"
 import Image from "next/image"
 import { useState, useMemo, useEffect } from "react"
-import { products } from "@/data/products"
-import { ProductCard } from "@/components/ProductCard"
+import { products } from "@/src/data/products"
+import { ProductCard } from "@/src/components/ProductCard"
 import { useSearchParams } from 'next/navigation';
-import { CATEGORIES, Category } from '@/data/categories';
-import { COLORS } from '@/data/colors';
+import { CATEGORIES, Category } from '@/src/data/categories';
+import { COLORS } from '@/src/data/colors';
 
 const page = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);

@@ -5,8 +5,8 @@ import { useParams, useRouter } from 'next/navigation';
 import productData from '../../latestProductData';
 import Image from 'next/image';
 import { Heart, ArrowLeft, TrendingUp } from "lucide-react";
-import Footer from '@/app/Components/Footer';
-import Skeleton from '@/components/Skeleton';
+import Footer from '../../Components/Footer';
+import Skeleton from '@/src/components/Skeleton';
 import { motion } from 'framer-motion';
 
 interface ProductType {
