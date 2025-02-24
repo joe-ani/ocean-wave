@@ -1,5 +1,6 @@
 "use client"
 import { motion } from "framer-motion"
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import { ArrowLeft } from "lucide-react"
 import { useRouter } from "next/navigation"
@@ -8,11 +9,17 @@ import Map from '../Components/Map'
 export default function ContactPage() {
   const router = useRouter();
   const targetLocation = { lat: 6.456559134970387, lng: 3.3842979366622847 };
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleGetDirections = () => {
-    if (typeof window !== 'undefined') {
-      window.open(`https://www.google.com/maps/search/?api=1&query=${targetLocation.lat},${targetLocation.lng}`);
-    }
+    if (!isMounted) return;
+
+    const url = `https://www.google.com/maps/search/?api=1&query=${targetLocation.lat},${targetLocation.lng}`;
+    window?.open(url);
   };
 
   return (

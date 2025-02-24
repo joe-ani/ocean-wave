@@ -11,18 +11,25 @@ import AboutFugo from "./Components/AboutFugo";
 import ContactForm from "./Components/ContactForm";
 import Footer from "./Components/Footer";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Nav from "./Components/Nav";
 
 const HomePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [message, setMessage] = useState("");
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const openWhatsApp = () => {
+    if (!isMounted) return;
+
     if (message.trim() !== "") {
       const encodedMessage = encodeURIComponent(message);
       const whatsappURL = `https://wa.me/2347016027618?text=${encodedMessage}`;
-      window.open(whatsappURL, "_blank"); // Open in a new tab
+      window?.open(whatsappURL, "_blank");
     } else {
       alert("Please enter a message.");
     }
