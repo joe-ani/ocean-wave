@@ -54,28 +54,28 @@ export default function ShopContent() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isMounted) return;
+    if (!isMounted || typeof window === 'undefined') return;
 
     try {
-      const url = new URL(window?.location?.href);
+      const url = new URL(window.location.href);
       url.searchParams.set('search', searchQuery);
-      window?.history?.pushState({}, '', url.toString());
+      window.history.pushState({}, '', url.toString());
     } catch (error) {
       console.error('Error updating URL:', error);
     }
   };
 
   const scrollToTop = () => {
-    if (!isMounted) return;
-    window?.scrollTo({
+    if (!isMounted || typeof window === 'undefined') return;
+    window.scrollTo({
       top: 0,
       behavior: 'smooth'
     });
   };
 
   const handleBack = () => {
-    if (!isMounted) return;
-    window?.history?.back();
+    if (!isMounted || typeof window === 'undefined') return;
+    window.history.back();
   };
 
   return (

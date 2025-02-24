@@ -4,15 +4,9 @@ import Image from "next/image"
 import { ArrowLeft } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
-import dynamic from 'next/dynamic'
+import ClientMap from '../Components/ClientMap'
 
-// Dynamically import Map component with no SSR
-const Map = dynamic(() => import('../Components/Map'), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full h-full bg-gray-100 animate-pulse rounded-2xl" />
-  )
-})
+// Remove the dynamic import since we're using ClientMap
 
 export default function ContactPage() {
   const router = useRouter();
@@ -57,7 +51,7 @@ export default function ContactPage() {
         {/* Map Container */}
         <div className="w-full mt-6 sm:mt-10">
           <div className="relative w-full aspect-video rounded-2xl overflow-hidden border-2 border-[#A4A4A4]">
-            <Map height="100%" className="absolute inset-0" />
+            <ClientMap height="100%" className="absolute inset-0" />
           </div>
         </div>
 

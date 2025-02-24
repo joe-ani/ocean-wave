@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 const Review = () => {
     const [isMounted, setIsMounted] = useState(false);
-    const [windowWidth, setWindowWidth] = useState(768); // Default to mobile breakpoint
+    const [windowWidth, setWindowWidth] = useState(0); // Initialize to 0
 
     useEffect(() => {
         setIsMounted(true);
@@ -22,8 +22,8 @@ const Review = () => {
             setWindowWidth(window.innerWidth);
         };
 
-        window?.addEventListener('resize', handleResize);
-        return () => window?.removeEventListener('resize', handleResize);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
     }, [isMounted]);
 
     return (

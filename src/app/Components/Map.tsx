@@ -12,14 +12,19 @@ interface MapProps {
 
 const ScrollZoomController = () => {
   const map = useMap();
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted || typeof window === 'undefined') return;
 
     const handleScroll = () => {
       const mapElement = map.getContainer();
       const rect = mapElement.getBoundingClientRect();
-      const viewportCenter = window?.innerHeight / 2;
+      const viewportCenter = (window?.innerHeight || 0) / 2;
       const elementCenter = rect.top + rect.height / 2;
       const distanceFromCenter = Math.abs(elementCenter - viewportCenter) / (window?.innerHeight || 1);
       const newZoom = 14 + ((1 - distanceFromCenter) * 4);
@@ -30,9 +35,9 @@ const ScrollZoomController = () => {
       });
     };
 
-    window?.addEventListener('scroll', handleScroll);
-    return () => window?.removeEventListener('scroll', handleScroll);
-  }, [map]);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [map, isMounted]);
 
   return null;
 };

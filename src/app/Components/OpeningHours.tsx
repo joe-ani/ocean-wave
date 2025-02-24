@@ -3,7 +3,7 @@ import Image from "next/image";
 import { motion, useAnimation } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import Map from './Map';
+import ClientMap from './ClientMap';
 
 const OpeningHours = () => {
   const controls = useAnimation();
@@ -106,7 +106,7 @@ const OpeningHours = () => {
             {/*Map */}
             <div className="absolute flex flex-col top-[170px] md:top-[20%] left-0 md:left-[10%] space-y-2">
               <div className="relative w-[200px] md:w-[250px] border-2 border-[#333333] rounded-lg md:border-0">
-                <Map height="170px" />
+                <ClientMap height="170px" />
               </div>
               <motion.button
                 whileHover={{ scale: 1.05 }}
