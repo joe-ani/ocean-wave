@@ -77,7 +77,7 @@ const HomePage = () => {
         <ContactForm />
       </div>
       {/* -------------- */}
-      <ClientMap />
+      {/* <ClientMap /> */}
       <WhatsAppButton />
       <Footer />
     </div>

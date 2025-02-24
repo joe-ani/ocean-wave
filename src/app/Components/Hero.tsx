@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useActiveLink } from "../context/ActiveLinkContext";
 import { useRouter } from "next/navigation";
 
@@ -14,8 +14,14 @@ const Hero = () => {
     const router = useRouter();
     const [searchQuery, setSearchQuery] = useState("");
     const [showSearch, setShowSearch] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     const scrollToSection = (sectionId: string) => {
+        if (!isMounted || typeof window === 'undefined') return;
         const element = document.getElementById(sectionId);
         if (element) {
             element.scrollIntoView({ behavior: 'smooth' });
@@ -26,6 +32,8 @@ const Hero = () => {
         setActiveLink(link);
         setMenuOpen(false);
 
+        if (!isMounted || typeof window === 'undefined') return;
+
         switch (link.toLowerCase()) {
             case 'contact':
                 scrollToSection('section7');
@@ -34,10 +42,10 @@ const Hero = () => {
                 scrollToSection('section6');
                 break;
             case 'home':
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                window?.scrollTo({ top: 0, behavior: 'smooth' });
                 break;
             case 'shop':
-                window.location.href = '/shop';
+                router.push('/shop');
                 break;
         }
     };
@@ -120,9 +128,7 @@ const Hero = () => {
                                 {["Home", "Shop", "Contact", "About"].map((link) => (
                                     <li
                                         key={link}
-                                        ref={link === "Home" ? listRef : null}
-                                        className={`relative cursor-pointer flex flex-col items-center ${activeLink === link ? "text-[#FEEF88]" : ""
-                                            }`}
+                                        className={`relative cursor-pointer flex flex-col items-center ${activeLink === link ? "text-[#FEEF88]" : ""}`}
                                         onClick={() => handleNavClick(link)}
                                     >
                                         <div>{link}</div>
@@ -263,7 +269,7 @@ const Hero = () => {
                     <Image width={20} height={20} alt="arrow down" src="/icons/drop.png" />
                 </motion.div>
             </Link>
-        </div>
+        </div >
     );
 };
 

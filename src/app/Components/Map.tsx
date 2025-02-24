@@ -14,12 +14,14 @@ const ScrollZoomController = () => {
   const map = useMap();
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
     const handleScroll = () => {
       const mapElement = map.getContainer();
       const rect = mapElement.getBoundingClientRect();
-      const viewportCenter = window.innerHeight / 2;
+      const viewportCenter = window?.innerHeight / 2;
       const elementCenter = rect.top + rect.height / 2;
-      const distanceFromCenter = Math.abs(elementCenter - viewportCenter) / window.innerHeight;
+      const distanceFromCenter = Math.abs(elementCenter - viewportCenter) / (window?.innerHeight || 1);
       const newZoom = 14 + ((1 - distanceFromCenter) * 4);
 
       map.setZoom(Math.min(Math.max(newZoom, 14), 18), {
@@ -28,8 +30,8 @@ const ScrollZoomController = () => {
       });
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window?.addEventListener('scroll', handleScroll);
+    return () => window?.removeEventListener('scroll', handleScroll);
   }, [map]);
 
   return null;

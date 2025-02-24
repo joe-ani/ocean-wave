@@ -15,17 +15,25 @@ const Nav = () => {
   const [showSearch, setShowSearch] = useState(false);
   const pathname = usePathname(); // Get the current route
   const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted || typeof window === 'undefined') return;
+
     const handleScroll = () => {
-      const scrollPosition = window.scrollY;
+      const scrollPosition = window?.scrollY;
       setIsVisible(scrollPosition > 300); // Show the navbar after scrolling 300px
     };
 
     if (pathname === "/") {
       // Add scroll event listener for the home page
       setIsVisible(false); // Initially hide the navbar
-      window.addEventListener("scroll", handleScroll);
+      window?.addEventListener("scroll", handleScroll);
+      return () => window?.removeEventListener("scroll", handleScroll);
     } else {
       setIsVisible(true); // Show the navbar immediately for other pages
     }
@@ -34,7 +42,7 @@ const Nav = () => {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [pathname]);
+  }, [pathname, isMounted]);
 
   // Add this useEffect to sync activeLink with current pathname
   useEffect(() => {
@@ -46,6 +54,7 @@ const Nav = () => {
   }, [pathname, setActiveLink]);
 
   const scrollToSection = (sectionId: string) => {
+    if (!isMounted || typeof window === 'undefined') return;
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -90,8 +99,7 @@ const Nav = () => {
   };
 
   return (
-    <nav className={`fixed top-0 w-full z-[100] bg-[#111111] text-white p-6 transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"
-      }`}>
+    <nav className={`fixed top-0 w-full z-[100] bg-[#111111] text-white p-6 transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"}`}>
       <div className="container mx-auto">
         <div className="flex justify-between items-center">
           {/* Logo */}
@@ -104,14 +112,12 @@ const Nav = () => {
             <motion.ul
               animate={{ opacity: showSearch ? 0 : 1 }}
               transition={{ duration: 0.2 }}
-              className={`list-none hidden md:flex items-center space-x-8 font-medium ${showSearch ? 'invisible' : 'visible'
-                }`}
+              className={`list-none hidden md:flex items-center space-x-8 font-medium ${showSearch ? 'invisible' : 'visible'}`}
             >
               {["Home", "Shop", "Contact", "About"].map((link) => (
                 <li
                   key={link}
-                  className={`relative cursor-pointer flex flex-col items-center ${activeLink === link ? "text-[#FEEF88]" : ""
-                    }`}
+                  className={`relative cursor-pointer flex flex-col items-center ${activeLink === link ? "text-[#FEEF88]" : ""}`}
                   onClick={() => handleNavClick(link)}
                 >
                   <div>{link}</div>
@@ -127,7 +133,7 @@ const Nav = () => {
               ))}
             </motion.ul>
 
-            {/* Search container - Fixed positioning and click handling */}
+            {/* Search container */}
             <div className="relative flex items-center z-[101]">
               <button
                 type="button"
@@ -160,7 +166,6 @@ const Nav = () => {
                       className="w-full px-4 py-2 rounded-full bg-[#cccccc21] text-white focus:outline-none"
                       placeholder="Search products..."
                       autoFocus
-                      onBlur={() => !searchQuery && setShowSearch(false)}
                     />
                   </div>
                 </motion.form>
@@ -189,16 +194,14 @@ const Nav = () => {
           </div>
         </div>
 
-
-
+        {/* Mobile menu */}
         {isMenuOpen && (
           <div className="md:hidden mt-4">
             <ul className="list-none flex flex-col items-center space-y-4 font-medium">
               {["Home", "Shop", "Contact", "About"].map((link) => (
                 <li
                   key={link}
-                  className={`relative cursor-pointer flex flex-col items-center ${activeLink === link ? "text-[#FEEF88]" : ""
-                    }`}
+                  className={`relative cursor-pointer flex flex-col items-center ${activeLink === link ? "text-[#FEEF88]" : ""}`}
                   onClick={() => {
                     handleNavClick(link);
                   }}
