@@ -5,16 +5,26 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 const Review = () => {
-    const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 768);
+    const [isMounted, setIsMounted] = useState(false);
+    const [windowWidth, setWindowWidth] = useState(768); // Default to mobile breakpoint
 
     useEffect(() => {
+        setIsMounted(true);
+        if (typeof window !== 'undefined') {
+            setWindowWidth(window.innerWidth);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (!isMounted) return;
+
         const handleResize = () => {
             setWindowWidth(window.innerWidth);
         };
 
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
+        window?.addEventListener('resize', handleResize);
+        return () => window?.removeEventListener('resize', handleResize);
+    }, [isMounted]);
 
     return (
         <div className="review grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-32 md:justify-items-end">

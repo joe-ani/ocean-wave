@@ -8,8 +8,13 @@ import Map from './Map';
 const OpeningHours = () => {
   const controls = useAnimation();
   const [ref, inView] = useInView({
-    threshold: 0.2, // Trigger animation when 20% of the component is in view
+    threshold: 0.2,
   });
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     if (inView) {
@@ -19,12 +24,17 @@ const OpeningHours = () => {
     }
   }, [controls, inView]);
 
+  const handleGetDirections = () => {
+    if (!isMounted) return;
+    window?.open(`https://www.google.com/maps/search/?api=1&query=6.456559134970387,3.3842979366622847`);
+  };
+
   const sectionVariant = {
-    hidden: { opacity: 0, y: 50 }, // Start with opacity 0 and moved down
+    hidden: { opacity: 0, y: 50 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.8, ease: "easeOut" }, // Smooth animation
+      transition: { duration: 0.8, ease: "easeOut" },
     },
   };
 
@@ -103,7 +113,7 @@ const OpeningHours = () => {
                 whileTap={{ scale: 0.9 }}
                 style={{ backdropFilter: "blur(.2em)" }}
                 className="flex space-x-2 md:space-x-4 items-center justify-center w-[200px] md:w-[70%] text-white text-sm bg-[#333333] md:bg-[#55555558] rounded-full py-3 md:p-2 border-[1.5px] border-[#fff] md:border-[#5b5b5b]"
-                onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=6.456559134970387,3.3842979366622847`)}
+                onClick={handleGetDirections}
               >
                 <div className="">Get Directions</div>
                 <Image

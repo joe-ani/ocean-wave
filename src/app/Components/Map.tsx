@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -25,9 +25,18 @@ const createIcon = () => L.icon({
 // Scroll zoom controller component
 const ScrollZoomController = () => {
   const map = useMap();
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
+
     const handleScroll = () => {
+      if (typeof window === 'undefined') return;
+
       const mapElement = map.getContainer();
       const rect = mapElement.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
@@ -42,17 +51,22 @@ const ScrollZoomController = () => {
       });
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [map]);
+    window?.addEventListener('scroll', handleScroll);
+    return () => window?.removeEventListener('scroll', handleScroll);
+  }, [map, isMounted]);
 
   return null;
 };
 
 const Map = ({ height = '170px', className = '' }: MapProps) => {
+  const [isMounted, setIsMounted] = useState(false);
   const targetLocation: [number, number] = [6.456559134970387, 3.3842979366622847];
 
   useEffect(() => {
+    setIsMounted(true);
+
+    if (!isMounted) return;
+
     // Initialize Leaflet icons
     delete (L.Icon.Default.prototype as any)._getIconUrl;
     L.Icon.Default.mergeOptions({
@@ -108,7 +122,7 @@ const Map = ({ height = '170px', className = '' }: MapProps) => {
     return () => {
       document.head.removeChild(style);
     };
-  }, []);
+  }, [isMounted]);
 
   return (
     <div style={{

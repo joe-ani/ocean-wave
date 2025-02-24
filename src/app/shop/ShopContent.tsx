@@ -16,15 +16,24 @@ export default function ShopContent() {
   const [activeColor, setActiveColor] = useState<string | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
+
     const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 500);
+      if (typeof window !== 'undefined') {
+        setShowScrollTop(window.scrollY > 500);
+      }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    window?.addEventListener('scroll', handleScroll);
+    return () => window?.removeEventListener('scroll', handleScroll);
+  }, [isMounted]);
 
   useEffect(() => {
     const category = searchParams.get('category');
@@ -45,16 +54,28 @@ export default function ShopContent() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    const url = new URL(window.location.href);
-    url.searchParams.set('search', searchQuery);
-    window.history.pushState({}, '', url);
+    if (!isMounted) return;
+
+    try {
+      const url = new URL(window?.location?.href);
+      url.searchParams.set('search', searchQuery);
+      window?.history?.pushState({}, '', url.toString());
+    } catch (error) {
+      console.error('Error updating URL:', error);
+    }
   };
 
   const scrollToTop = () => {
-    window.scrollTo({
+    if (!isMounted) return;
+    window?.scrollTo({
       top: 0,
       behavior: 'smooth'
     });
+  };
+
+  const handleBack = () => {
+    if (!isMounted) return;
+    window?.history?.back();
   };
 
   return (
@@ -66,7 +87,7 @@ export default function ShopContent() {
           className="fixed top-32 sm:top-40 left-4 sm:left-6 cursor-pointer bg-white/10 backdrop-blur-sm 
           w-[35px] h-[35px] sm:w-[40px] sm:h-[40px] rounded-full flex items-center justify-center 
           hover:bg-white/20 z-50"
-          onClick={() => window.history.back()}
+          onClick={handleBack}
         >
           <Image
             width={24}
