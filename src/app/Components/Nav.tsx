@@ -166,7 +166,7 @@ const Nav = () => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="menu-overlay fixed inset-0 bg-black/70 backdrop-blur-sm z-[90]"
+          className="menu-overlay fixed inset-0 bg-black/50 backdrop-blur-sm z-[90]"
         />
       )}
 
