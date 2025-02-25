@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useRef, useState, useEffect, useCallback } from "react";
 import { useActiveLink } from "../context/ActiveLinkContext";
@@ -18,6 +18,29 @@ const Hero = () => {
     const dropIconRef = useRef<HTMLDivElement>(null);
     const actionsRef = useRef<HTMLDivElement>(null);
     const [isOverlapping, setIsOverlapping] = useState(false);
+    const [currentModelIndex, setCurrentModelIndex] = useState(0);
+
+    // Array of model images
+    const modelImages = [
+        "/model.png",
+        "/model1.png",
+        "/model2.png",
+        "/model4.png",
+        // Add more model image paths as needed
+    ];
+
+    // Image rotation effect
+    useEffect(() => {
+        if (!isMounted) return;
+
+        const interval = setInterval(() => {
+            setCurrentModelIndex((prevIndex) =>
+                prevIndex === modelImages.length - 1 ? 0 : prevIndex + 1
+            );
+        }, 4000); // Changed to 4 seconds for each image display
+
+        return () => clearInterval(interval);
+    }, [isMounted, modelImages.length]);
 
     useEffect(() => {
         setIsMounted(true);
@@ -185,6 +208,30 @@ const Hero = () => {
                 ease: [0.4, 0, 0.2, 1],
             }
         })
+    };
+
+    // Animation variants for the model image
+    const slideUpVariants = {
+        enter: {
+            // y: 100,
+            opacity: 0
+        },
+        center: {
+            y: 0,
+            opacity: 1,
+            transition: {
+                y: { duration: 1.5, ease: [0.16, 1, 0.3, 1] },
+                opacity: { duration: 1.5, ease: [0.16, 1, 0.3, 1] }
+            }
+        },
+        exit: {
+            // y: -100,
+            opacity: 0,
+            transition: {
+                y: { duration: 1.5, ease: [0.16, 1, 0.3, 1] },
+                opacity: { duration: 1.5, ease: [0.16, 1, 0.3, 1] }
+            }
+        }
     };
 
     return (
@@ -405,9 +452,31 @@ const Hero = () => {
                     animate="visible"
                     className="highlight absolute top-[200px] md:relative md:top-0 w-48 md:w-80 flex items-center justify-center mt-8 md:mt-0">
                     {/* Model */}
-                    <motion.div variants={modelImageVariants} className="absolute">
-                        <Image width={240} height={160} alt="Dfugo logo" src="/model.png" className="w-52 md:w-auto z-10 relative" />
+                    <motion.div variants={modelImageVariants} className="absolute w-52 md:w-auto">
+                        {/* Fixed background circle */}
                         <div className="bg-[#FEEF88] rounded-full w-full h-full absolute top-0"></div>
+
+                        {/* Animated model image */}
+                        {/* problem: Two images on top of each other during entrance and exit causing the styling to stretch the bg circle and offset the current image ot of position */}
+                        <AnimatePresence mode="popLayout">
+                            <motion.div
+                                key={currentModelIndex}
+                                variants={slideUpVariants}
+                                initial="enter"
+                                animate="center"
+                                exit="exit"
+                                className="relative z-10"
+                            >
+                                <Image
+                                    width={240}
+                                    height={160}
+                                    alt={`Model ${currentModelIndex + 1}`}
+                                    src={modelImages[currentModelIndex]}
+                                    className="w-52 md:w-auto z-10 relative"
+                                    priority
+                                />
+                            </motion.div>
+                        </AnimatePresence>
                         <div className="fade-boundary"></div>
                     </motion.div>
 
