@@ -498,7 +498,7 @@ const Hero = () => {
                             <div className="w-[100%] h-[1px] bg-[#ccc] rounded-full"></div>
                         </div>
                         <div className="flex bg-[#cccccc39] p-[6px] md:p-[10px] rounded-[8px]">
-                            <Image width={24} height={16} src={"/images/wig1.png"} alt="" className="w-4 md:w-6" />
+                            {/* <Image width={24} height={16} src={"/images/wig1.png"} alt="" className="w-4 md:w-6" /> */}
                         </div>
                     </motion.div>
                 </motion.div>
