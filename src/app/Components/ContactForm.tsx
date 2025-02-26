@@ -1,8 +1,19 @@
 "use client";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import React from "react";
 
 const ContactForm = () => {
+    const [message, setMessage] = React.useState("");
+
+    const handleSendMessage = () => {
+        if (message.trim()) {
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/2347016027618?text=${encodedMessage}`, '_blank');
+            setMessage(""); // Clear the input after sending
+        }
+    };
+
     return (
         <div className="flex flex-col md:flex-row justify-around relative bg-gradient-to-b from-[#ededed] to-transparent p-4 md:p-10">
             {/* WhatsApp Section */}
@@ -17,7 +28,7 @@ const ContactForm = () => {
                     <div className="font-medium text-xs md:text-base text-black">Send us a.</div>
                     <div className="text-lg md:text-2xl text-black">Whatsapp Message</div>
                 </div>
-            
+
                 <motion.div
                     className="w-full md:w-[550px] h-[80px] md:h-[150px] bg-[#d4d4d4] border-2 border-white rounded-[10px] md:rounded-[20px] relative flex flex-col justify-end p-3 md:p-4"
                     initial={{ scale: 0.9, opacity: 0 }}
@@ -28,10 +39,18 @@ const ContactForm = () => {
                     <div className="flex items-center w-full">
                         <input
                             type="text"
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
                             className="w-full bg-transparent border-none outline-none text-black placeholder-black text-xs md:text-base font-thin"
                             placeholder="Type your message..."
+                            onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleSendMessage();
+                                }
+                            }}
                         />
-                        <motion.div 
+                        <motion.div
+                            onClick={handleSendMessage}
                             className="ml-2 cursor-pointer"
                             whileHover={{ scale: 1.2 }}
                             whileTap={{ scale: 0.9 }}
@@ -64,22 +83,46 @@ const ContactForm = () => {
                     viewport={{ once: true }} // Trigger animation only once
                 >
                     {/* instagram */}
-                    <div className="flex items-center space-x-2 md:space-x-4 hover:bg-[#d3d3d3] p-2 rounded transition-colors duration-300">
+                    <motion.a
+                        href="https://www.instagram.com/d_fugo_hair"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center space-x-2 md:space-x-4 p-2 rounded cursor-pointer"
+                        whileHover={{ scale: 1.05, backgroundColor: "#d3d3d3" }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
+                    >
                         <Image className="object-contain w-4 md:w-5" width={20} height={20} src="/icons/instagram.png" alt="instagram" />
                         <div className="font-normal text-xs md:text-base">@d_fugo_hair</div>
-                    </div>
+                    </motion.a>
                     <motion.div className="w-full h-[1px] bg-white" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.3 }}></motion.div>
                     {/* tiktok */}
-                    <div className="flex items-center space-x-2 md:space-x-4 hover:bg-[#d3d3d3] p-2 rounded transition-colors duration-300">
+                    <motion.a
+                        href="https://www.tiktok.com/@d_fugo_hair"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center space-x-2 md:space-x-4 p-2 rounded cursor-pointer"
+                        whileHover={{ scale: 1.05, backgroundColor: "#d3d3d3" }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
+                    >
                         <Image className="object-contain w-4 md:w-5" width={20} height={20} src="/icons/tiktok.png" alt="tiktok" />
                         <div className="font-normal text-xs md:text-base">@d_fugo_hair</div>
-                    </div>
+                    </motion.a>
                     <motion.div className="w-full h-[1px] bg-white" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.3 }}></motion.div>
                     {/* whatsapp */}
-                    <div className="flex items-center space-x-2 md:space-x-4 hover:bg-[#d3d3d3] p-2 rounded transition-colors duration-300">
+                    <motion.a
+                        href="https://wa.me/2347016027618?text=Hello!%20I'm%20interested%20in%20your%20wigs.%20"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center space-x-2 md:space-x-4 p-2 rounded cursor-pointer"
+                        whileHover={{ scale: 1.05, backgroundColor: "#d3d3d3" }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
+                    >
                         <Image className="object-contain w-4 md:w-5" width={20} height={20} src="/icons/whatsapp.png" alt="whatsapp" />
                         <div className="font-normal text-xs md:text-base">@d_fugo_hair</div>
-                    </div>
+                    </motion.a>
                 </motion.div>
             </motion.div>
         </div>
