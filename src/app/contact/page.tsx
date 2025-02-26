@@ -48,44 +48,77 @@ export default function ContactPage() {
           <div className="w-6 sm:w-8"></div>
         </div>
 
-        {/* Map Container */}
-        <div className="w-full mt-6 sm:mt-10">
-          <div className="relative w-full aspect-video rounded-2xl overflow-hidden border-2 border-[#A4A4A4]">
-            <ClientMap height="100%" className="absolute inset-0" />
+        {/* Main Content Container */}
+        <div className="flex flex-col lg:flex-row gap-8 mt-6 sm:mt-10">
+          {/* Left Side - Text Content */}
+          <div className="flex-1">
+            <motion.div
+              initial={{ x: -100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.6 }}
+              className="space-y-6"
+            >
+              <h1 className="text-4xl sm:text-5xl font-bold mb-6">Find us the easy way</h1>
+
+              <div className="space-y-8">
+                {/* Store Information */}
+                <div>
+                  <h2 className="text-2xl sm:text-3xl font-semibold mb-4">Visit Our Store</h2>
+                  <p className="text-base sm:text-lg text-gray-600">
+                    D&apos;Fugo Hair<br />
+                    10, Balogun street<br />
+                    Lagos Island, Lagos Nigeria
+                  </p>
+                </div>
+
+                {/* Opening Hours */}
+                <div className="space-y-2 text-gray-600">
+                  <p className="text-sm sm:text-base">Monday - Saturday: 8:00 AM - 1:00 PM</p>
+                  <p className="text-sm sm:text-base text-red-400">Sunday: Closed</p>
+                  <motion.a
+                    href="https://wa.me/2348038683235"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm sm:text-base mt-4 inline-block cursor-pointer hover:text-yellow-500 transition-colors"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    📞 +2348038683235
+                  </motion.a>
+                </div>
+
+                {/* Get Directions Button */}
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={handleGetDirections}
+                  className="flex items-center justify-center space-x-2 bg-[#333333] text-white 
+                  py-3 px-8 rounded-md hover:opacity-90 transition-opacity text-base sm:text-lg"
+                >
+                  <span>Get Directions</span>
+                  <Image
+                    width={20}
+                    height={20}
+                    src="/icons/location.png"
+                    alt="location"
+                    className="ml-2"
+                  />
+                </motion.button>
+              </div>
+            </motion.div>
           </div>
-        </div>
 
-        {/* Contact Information */}
-        <div className="mt-8 sm:mt-12 text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-4">Visit Our Store</h2>
-          <p className="text-base sm:text-lg text-gray-600 mb-6">
-            D&apos;Fugo Hair<br />
-            10, Balogun street<br />
-            Lagos Island, Lagos Nigeria
-          </p>
-
-          <div className="space-y-2 text-gray-600 mb-8">
-            <p className="text-sm sm:text-base">Monday - Saturday: 8:00 AM - 1:00 PM</p>
-            <p className="text-sm sm:text-base text-red-400">Sunday: Closed</p>
-            <p className="text-sm sm:text-base mt-4">📞 +2348038683235</p>
-          </div>
-
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={handleGetDirections}
-            className="flex items-center justify-center space-x-2 mx-auto bg-[#333333] text-white 
-            py-3 px-8 rounded-md hover:opacity-90 transition-opacity text-base sm:text-lg"
+          {/* Right Side - Map */}
+          <motion.div
+            className="flex-1"
+            initial={{ x: 100, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.6 }}
           >
-            <span>Get Directions</span>
-            <Image
-              width={20}
-              height={20}
-              src="/icons/location.png"
-              alt="location"
-              className="ml-2"
-            />
-          </motion.button>
+            <div className="relative w-full aspect-square rounded-2xl overflow-hidden border-2 border-[#A4A4A4]">
+              <ClientMap height="100%" className="absolute inset-0" />
+            </div>
+          </motion.div>
         </div>
       </div>
     </div>
