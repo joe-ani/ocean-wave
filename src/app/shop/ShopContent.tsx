@@ -106,28 +106,61 @@ export default function ShopContent() {
         />
       </div>
 
-      <div className="w-full max-w-4xl mt-4 sm:mt-8 flex flex-col sm:flex-row justify-between items-center 
-      gap-2 sm:gap-6 px-2 sm:px-4 md:px-8">
-        <form onSubmit={handleSearch} className="relative flex-1 w-full">
-          <Image
-            width={20}
-            height={20}
-            src="/icons/search.png"
-            alt="search"
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 opacity-40 transition-opacity group-hover:opacity-60"
-          />
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-12 py-3.5 bg-gray-50/50 backdrop-blur-sm border-[1.5px] border-gray-200 
-            rounded-full focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-gray-300 
-            transition-all duration-300 shadow-sm hover:shadow-md"
-          />
-          <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+      <div className="w-full max-w-4xl mt-4 sm:mt-8 flex flex-row justify-between items-center 
+      gap-3 px-2 sm:px-4 md:px-8">
+        {/* Search Bar */}
+        <div className="flex-1 max-w-[280px]">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                handleSearch(e); // This will trigger search as you type
+              }}
+              className="w-full py-2 px-4 bg-[#f1f1f1] rounded-full text-sm focus:outline-none
+              border border-transparent focus:border-gray-200 transition-all duration-300 pr-10"
+            />
+            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+              <svg
+                className="w-4 h-4 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        {/* Filter Dropdown */}
+        <div className="relative min-w-[100px]">
+          <select
+            className="appearance-none w-full py-2 px-4 bg-[#f1f1f1] rounded-full text-sm
+            border border-transparent focus:border-gray-200 focus:outline-none cursor-pointer
+            transition-all duration-300 pr-8"
+            onChange={(e) => {
+              const select = e.currentTarget;
+              select.style.transform = 'scale(0.98)';
+              setTimeout(() => select.style.transform = '', 150);
+            }}
+          >
+            <option value="">All</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+            <option value="newest">Newest First</option>
+            <option value="popular">Most Popular</option>
+          </select>
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
             <svg
-              className="w-5 h-5 text-gray-400"
+              className="w-4 h-4 text-gray-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -136,50 +169,11 @@ export default function ShopContent() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                d="M19 9l-7 7-7-7"
               />
             </svg>
           </div>
-        </form>
-
-        <motion.div
-          className="relative w-full sm:min-w-[180px] sm:w-auto"
-          initial={false}
-        >
-          <motion.select
-            className="appearance-none w-full h-[50px] px-5 bg-gray-50/50 backdrop-blur-sm border-[1.5px] 
-            border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-black/20 
-            focus:border-gray-300 transition-all duration-300 shadow-sm hover:shadow-md 
-            cursor-pointer text-gray-700 pr-14 leading-[50px]"
-            onChange={(e) => {
-              const select = e.currentTarget;
-              select.style.transform = 'scale(0.98)';
-              setTimeout(() => select.style.transform = '', 150);
-            }}
-            onFocus={() => setIsFilterOpen(true)}
-            onBlur={() => setIsFilterOpen(false)}
-          >
-            <option value="" className="h-10 leading-10">Filter By</option>
-            <option value="price-low" className="h-10 leading-10">Price: Low to High</option>
-            <option value="price-high" className="h-10 leading-10">Price: High to Low</option>
-            <option value="newest" className="h-10 leading-10">Newest First</option>
-            <option value="popular" className="h-10 leading-10">Most Popular</option>
-          </motion.select>
-          <motion.div
-            className="absolute right-5 top-0 h-full flex items-center justify-center pointer-events-none"
-            initial={{ rotate: 0 }}
-            animate={{ rotate: isFilterOpen ? 180 : 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Image
-              width={20}
-              height={20}
-              src="/icons/dropdown.png"
-              alt="dropdown"
-              className="w-5 h-5 object-contain"
-            />
-          </motion.div>
-        </motion.div>
+        </div>
       </div>
 
       <div className="w-full max-w-4xl mt-4 sm:mt-8 px-2 sm:px-4 md:px-8">
