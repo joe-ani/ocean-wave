@@ -103,7 +103,7 @@ export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
         </div>
         <div className="w-full h-[1px] bg-[#dddd]"></div>
         <div className="flex items-center justify-between px-2 sm:px-3">
-          <p className="text-white font-medium text-xs">${product.price}</p>
+          <p className="text-white font-medium text-xs">₦{product.price}</p>
           <div className="flex items-center gap-1">
             <span className="text-white text-[10px] sm:text-xs">({product.rating})</span>
             <TrendingUp className="text-green-400" size={16} />
