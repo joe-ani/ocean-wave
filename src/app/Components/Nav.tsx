@@ -248,7 +248,7 @@ const Nav = () => {
               <div className="md:hidden flex items-center">
                 <button
                   id="hamburger-button"
-                  className="text-white focus:outline-none z-[120]"
+                  className="text-white focus:outline-none z-[120] pr-4" // Added padding-right
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsMenuOpen(!isMenuOpen);

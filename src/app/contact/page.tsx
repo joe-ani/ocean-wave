@@ -76,7 +76,7 @@ export default function ContactPage() {
                   <p className="text-sm sm:text-base">Monday - Saturday: 8:00 AM - 1:00 PM</p>
                   <p className="text-sm sm:text-base text-red-400">Sunday: Closed</p>
                   <motion.a
-                    href="https://wa.me/2348038683235"
+                    href="https://wa.me/2347016027618?text=Hello!%20I'm%20interested%20in%20your%20wigs.%20"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm sm:text-base mt-4 inline-block cursor-pointer hover:text-yellow-500 transition-colors"
