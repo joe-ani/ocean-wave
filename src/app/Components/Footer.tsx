@@ -51,7 +51,7 @@ const Footer = () => {
                             exit={{ scale: 0.8 }}
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <h3 className="text-gray-800 font-semibold text-lg mb-3 sm:mb-4">Admin Access</h3>
+                            <h3 className="text-gray-800 font-bold text-lg mb-3 sm:mb-4">Admin Access</h3>
                             <input
                                 type="password"
                                 value={adminKey}
