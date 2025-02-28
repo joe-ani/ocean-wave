@@ -293,7 +293,7 @@ const Hero = () => {
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full px-6 py-3 rounded-full bg-[#ffffff10] text-white focus:outline-none focus:ring-2 focus:ring-[#FEEF88] transition-all text-center"
+                                className="w-full px-6 py-3 rounded-full bg-[#ffffff10] text-white focus:outline-none focus:ring-2 focus:ring-[#FEEF88] transition-all text-left" // Changed text-center to text-left
                                 placeholder="Search products..."
                             />
                             <button
@@ -393,7 +393,7 @@ const Hero = () => {
                                                 type="text"
                                                 value={searchQuery}
                                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                                className="w-full px-4 py-2 rounded-full bg-[#cccccc21] text-white focus:outline-none"
+                                                className="w-full px-4 py-2 rounded-full bg-[#cccccc21] text-white focus:outline-none text-left" // Changed text-center to text-left
                                                 placeholder="Search products..."
                                                 autoFocus
                                                 onBlur={() => !searchQuery && setShowSearch(false)}

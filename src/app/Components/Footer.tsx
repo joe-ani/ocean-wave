@@ -57,18 +57,18 @@ const Footer = () => {
                                 value={adminKey}
                                 onChange={(e) => setAdminKey(e.target.value)}
                                 placeholder="Enter admin key"
-                                className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border rounded-lg mb-3 sm:mb-4 text-gray-800"
+                                className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border rounded-lg mb-3 sm:mb-4 font-[500] text-gray-800"
                             />
                             <div className="flex justify-end space-x-2 sm:space-x-3">
                                 <button
                                     onClick={handleCloseModal}
-                                    className="px-3 sm:px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
+                                    className="px-3 font-[500] sm:px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     onClick={handleAdminAccess}
-                                    className="px-3 sm:px-4 py-2 bg-[#333333] text-white rounded-lg hover:bg-gray-800 transition-colors duration-200"
+                                    className="px-3 sm:px-4 py-2 font-[500] bg-[#333333] text-white rounded-lg hover:bg-gray-800 transition-colors duration-200"
                                 >
                                     Access
                                 </button>
