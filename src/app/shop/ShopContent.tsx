@@ -106,19 +106,16 @@ export default function ShopContent() {
         />
       </div>
 
-      <div className="w-full max-w-4xl mt-4 sm:mt-8 flex flex-row justify-between items-center 
-      gap-3 px-2 sm:px-4 md:px-8">
+      <div className="w-full max-w-4xl mt-4 sm:mt-8 flex flex-col sm:flex-row justify-between items-center gap-3 px-2 sm:px-4 md:px-8">
         {/* Search Bar */}
-        <div className="flex-1 max-w-[280px]">
+        <div className="flex-1 w-full sm:max-w-[280px]">
           <div className="relative">
             <input
               type="text"
               placeholder="Search"
               value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                handleSearch(e); // This will trigger search as you type
-              }}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onBlur={handleSearch} // Trigger search on blur to avoid glitch
               className="w-full py-2 px-4 bg-[#f1f1f1] rounded-full text-sm focus:outline-none
               border border-transparent focus:border-gray-200 transition-all duration-300 pr-10"
             />
@@ -141,7 +138,7 @@ export default function ShopContent() {
         </div>
 
         {/* Filter Dropdown */}
-        <div className="relative min-w-[100px]">
+        <div className="relative w-full sm:min-w-[100px] sm:w-auto">
           <select
             className="appearance-none w-full py-2 px-4 bg-[#f1f1f1] rounded-full text-sm
             border border-transparent focus:border-gray-200 focus:outline-none cursor-pointer

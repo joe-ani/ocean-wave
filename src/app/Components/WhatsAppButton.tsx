@@ -75,7 +75,7 @@ const WhatsAppButton = () => {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setIsModalOpen(true)}
-                className="bg-gradient-to-bl from-[#fee88e] to-[#CFAA3D] w-[60px] h-[60px] md:w-[70px] md:h-[70px] rounded-full fixed top-[80%] md:top-[70%] right-5 md:right-10 flex items-center justify-center shadow-lg cursor-pointer"
+                className="bg-gradient-to-bl from-[#fee88e] to-[#CFAA3D] w-[60px] h-[60px] md:w-[70px] md:h-[70px] rounded-full fixed top-[80%] md:top-[70%] right-5 md:right-10 flex items-center justify-center shadow-lg cursor-pointer z-[9999]"
             >
                 <Image width={35} height={35} className="w-[42%] md:w-[60%]" src={"/icons/message.png"} alt={"message"} />
             </motion.div>
