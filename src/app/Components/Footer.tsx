@@ -32,29 +32,29 @@ const Footer = () => {
     return (
         <footer className="w-full bg-[#111] text-white pt-24 pb-6 font-light mt-auto">
             {showAdminPrompt && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
-                        <h3 className="text-gray-800 font-semibold text-lg mb-4">Admin Access</h3>
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-xl w-full max-w-[320px] sm:max-w-md">
+                        <h3 className="text-gray-800 font-semibold text-lg mb-3 sm:mb-4">Admin Access</h3>
                         <input
                             type="password"
                             value={adminKey}
                             onChange={(e) => setAdminKey(e.target.value)}
                             placeholder="Enter admin key"
-                            className="w-full px-4 py-2 border rounded-lg mb-4 text-gray-800"
+                            className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border rounded-lg mb-3 sm:mb-4 text-gray-800"
                         />
-                        <div className="flex justify-end space-x-3">
+                        <div className="flex justify-end space-x-2 sm:space-x-3">
                             <button
                                 onClick={() => {
                                     setShowAdminPrompt(false);
                                     setAdminKey('');
                                 }}
-                                className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
+                                className="px-3 sm:px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleAdminAccess}
-                                className="px-4 py-2 bg-[#333333] text-white rounded-lg hover:bg-gray-800 transition-colors duration-200"
+                                className="px-3 sm:px-4 py-2 bg-[#333333] text-white rounded-lg hover:bg-gray-800 transition-colors duration-200"
                             >
                                 Access
                             </button>
