@@ -170,7 +170,7 @@ const Nav = () => {
         />
       )}
 
-      <nav className={`fixed top-0 w-full z-[100] bg-[#111111] text-white p-6 transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"}`}>
+      <nav className={`fixed top-0 w-full z-[100] bg-[#111111] text-white p-4 sm:p-6 transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"}`}>
         <div className="container mx-auto relative">
           {/* Main nav content */}
           <div className="flex justify-between items-center relative z-[110]">
