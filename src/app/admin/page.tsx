@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { databases, storage, appwriteConfig } from '../../lib/appwrite';
 import { ID, Query } from 'appwrite';
 import { useForm } from 'react-hook-form';
@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Define the product schema
 const productSchema = z.object({
@@ -33,6 +34,9 @@ export default function AdminPage() {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+    const [showImageModal, setShowImageModal] = useState<string | null>(null);
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+    const formRef = useRef<HTMLDivElement>(null);
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm<ProductFormData>({
         resolver: zodResolver(productSchema)
@@ -57,7 +61,8 @@ export default function AdminPage() {
         try {
             const response = await databases.listDocuments(
                 appwriteConfig.databaseId,
-                appwriteConfig.productsCollectionId
+                appwriteConfig.productsCollectionId,
+                [sortOrder === 'asc' ? Query.orderAsc('$createdAt') : Query.orderDesc('$createdAt')]
             );
             console.log('✅ Products fetched successfully:', response);
             setProducts(response.documents as unknown as Product[]);
@@ -171,6 +176,7 @@ export default function AdminPage() {
             price: product.price,
             description: product.description,
         });
+        formRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
     if (!isAuthorized) {
@@ -185,7 +191,7 @@ export default function AdminPage() {
                 </h1>
 
                 {/* Product Form */}
-                <div className="bg-white p-4 sm:p-8 rounded-xl sm:rounded-2xl shadow-lg mb-8 sm:mb-12 transition-all duration-300 hover:shadow-xl">
+                <div ref={formRef} className="bg-white p-4 sm:p-8 rounded-xl sm:rounded-2xl shadow-lg mb-8 sm:mb-12 transition-all duration-300 hover:shadow-xl">
                     <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6">
                         {editingProduct ? 'Edit Product' : 'Add New Product'}
                     </h2>
@@ -287,8 +293,9 @@ export default function AdminPage() {
                             <select
                                 className="w-full sm:w-auto px-3 sm:px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white focus:ring-1 focus:ring-gray-400 focus:border-gray-400 transition-all duration-200"
                                 onChange={(e) => {
-                                    // Sorting functionality will be implemented later
-                                    console.log('Sort by:', e.target.value);
+                                    const order = e.target.value === 'newest' ? 'desc' : 'asc';
+                                    setSortOrder(order);
+                                    fetchProducts();
                                 }}
                             >
                                 <option value="newest">Newest First</option>
@@ -304,7 +311,8 @@ export default function AdminPage() {
                                         <img
                                             src={product.imageUrl}
                                             alt={product.name}
-                                            className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-300"
+                                            className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-300 cursor-pointer"
+                                            onClick={() => setShowImageModal(product.imageUrl)}
                                         />
                                     </div>
                                 )}
@@ -332,6 +340,28 @@ export default function AdminPage() {
                     </div>
                 </div>
             </div>
+
+            <AnimatePresence>
+                {showImageModal && (
+                    <motion.div
+                        className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setShowImageModal(null)}
+                    >
+                        <motion.div
+                            className="bg-white p-4 sm:p-6 rounded-lg shadow-xl w-full max-w-[90%] sm:max-w-[80%] lg:max-w-[60%] max-h-[calc(100vh-60px)] overflow-auto"
+                            initial={{ scale: 0.8 }}
+                            animate={{ scale: 1 }}
+                            exit={{ scale: 0.8 }}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <img src={showImageModal} alt="Product" className="w-full h-auto object-contain" />
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
-} 
+}
