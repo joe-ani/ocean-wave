@@ -38,6 +38,7 @@ export default function AdminPage() {
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
     const formRef = useRef<HTMLDivElement>(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [showDeleteModal, setShowDeleteModal] = useState<string | null>(null);
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm<ProductFormData>({
         resolver: zodResolver(productSchema)
@@ -173,6 +174,25 @@ export default function AdminPage() {
         } catch (error) {
             console.error('Error deleting product:', error);
             toast.error('Failed to delete product');
+        }
+    };
+
+    const confirmDelete = async () => {
+        if (showDeleteModal) {
+            try {
+                await databases.deleteDocument(
+                    appwriteConfig.databaseId,
+                    appwriteConfig.productsCollectionId,
+                    showDeleteModal
+                );
+                toast.success('Product deleted successfully');
+                fetchProducts();
+            } catch (error) {
+                console.error('Error deleting product:', error);
+                toast.error('Failed to delete product');
+            } finally {
+                setShowDeleteModal(null);
+            }
         }
     };
 
@@ -399,7 +419,7 @@ export default function AdminPage() {
                                             Edit
                                         </button>
                                         <button
-                                            onClick={() => handleDelete(product.$id)}
+                                            onClick={() => setShowDeleteModal(product.$id)}
                                             className="flex-1 bg-red-50 text-red-600 px-3 sm:px-4 py-2 rounded-lg font-medium hover:bg-red-100 transition-all duration-200"
                                         >
                                             Delete
@@ -445,6 +465,43 @@ export default function AdminPage() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                                 </svg>
                             </button>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+                {showDeleteModal && (
+                    <motion.div
+                        className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setShowDeleteModal(null)}
+                    >
+                        <motion.div
+                            className="bg-white p-4 sm:p-6 rounded-lg shadow-xl w-full max-w-sm"
+                            initial={{ scale: 0.8 }}
+                            animate={{ scale: 1 }}
+                            exit={{ scale: 0.8 }}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <h2 className="text-lg font-bold text-gray-900 mb-4">Confirm Delete</h2>
+                            <p className="text-gray-600 mb-6">Are you sure you want to delete this product?</p>
+                            <div className="flex justify-end gap-4">
+                                <button
+                                    className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-200 transition-all duration-200"
+                                    onClick={() => setShowDeleteModal(null)}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    className="bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition-all duration-200"
+                                    onClick={confirmDelete}
+                                >
+                                    Delete
+                                </button>
+                            </div>
                         </motion.div>
                     </motion.div>
                 )}
