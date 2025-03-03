@@ -9,6 +9,7 @@ import { z } from 'zod';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSwipeable } from 'react-swipeable';
 
 // Define the product schema
 const productSchema = z.object({
@@ -227,6 +228,12 @@ export default function AdminPage() {
             }
         }
     };
+
+    const swipeHandlers = useSwipeable({
+        onSwipedLeft: handleNextImage,
+        onSwipedRight: handlePrevImage,
+        trackMouse: true
+    });
 
     if (!isAuthorized) {
         return null; // or return a loading state
@@ -447,8 +454,18 @@ export default function AdminPage() {
                             animate={{ scale: 1 }}
                             exit={{ scale: 0.8 }}
                             onClick={(e) => e.stopPropagation()}
+                            {...swipeHandlers}
                         >
-                            <img src={showImageModal} alt="Product" className="w-full h-auto object-contain" />
+                            <motion.img
+                                key={showImageModal}
+                                src={showImageModal}
+                                alt="Product"
+                                className="w-full h-auto object-contain"
+                                initial={{ opacity: 0, x: 100 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -100 }}
+                                transition={{ duration: 0.5 }}
+                            />
                             <button
                                 className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-700 transition-all duration-200"
                                 onClick={handlePrevImage}
