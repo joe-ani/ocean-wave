@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
 import { COLORS } from '../../data/colors';
+import type { Variants } from 'framer-motion';
 
 // Define the product schema
 const productSchema = z.object({
@@ -244,6 +245,12 @@ export default function AdminPage() {
     if (!isAuthorized) {
         return null; // or return a loading state
     }
+
+    const imageVariants: Variants = {
+        initial: { opacity: 0, x: 100, position: "relative" as "relative" },
+        animate: { opacity: 1, x: 0, position: "relative" as "relative" },
+        exit: { opacity: 0, x: -100, position: "absolute" as "absolute" },
+    };
 
     return (
         <div className="min-h-screen bg-gray-50 pt-32 sm:pt-40 pb-8 sm:pb-12 px-4 sm:px-6 lg:px-8">
@@ -485,16 +492,23 @@ export default function AdminPage() {
                             onClick={(e) => e.stopPropagation()}
                             {...swipeHandlers}
                         >
-                            <motion.img
-                                key={showImageModal}
-                                src={showImageModal}
-                                alt="Product"
-                                className="w-full h-auto object-contain"
-                                initial={{ opacity: 0, x: 100 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -100 }}
-                                transition={{ duration: 0.5 }}
-                            />
+                            <AnimatePresence initial={false} custom={currentImageIndex}>
+                                <motion.div
+                                    key={showImageModal}
+                                    variants={imageVariants}
+                                    initial="initial"
+                                    animate="animate"
+                                    exit="exit"
+                                    transition={{ duration: 0.5, ease: "easeInOut" }}
+                                    className="w-full h-auto object-contain"
+                                >
+                                    <img
+                                        src={showImageModal}
+                                        alt="Product"
+                                        className="w-full h-auto object-contain"
+                                    />
+                                </motion.div>
+                            </AnimatePresence>
                             <button
                                 className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-700 transition-all duration-200"
                                 onClick={handlePrevImage}
