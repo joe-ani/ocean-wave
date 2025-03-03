@@ -380,6 +380,11 @@ export default function AdminPage() {
                                                 }}
                                             />
                                         )}
+                                        {product.imageUrls.length > 1 && (
+                                            <div className="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded-full text-xs">
+                                                {product.imageUrls.length} images
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                                 <div className="p-4 sm:p-6">
@@ -425,16 +430,20 @@ export default function AdminPage() {
                         >
                             <img src={showImageModal} alt="Product" className="w-full h-auto object-contain" />
                             <button
-                                className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full"
+                                className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-700 transition-all duration-200"
                                 onClick={handlePrevImage}
                             >
-                                &lt;
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                                </svg>
                             </button>
                             <button
-                                className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full"
+                                className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-700 transition-all duration-200"
                                 onClick={handleNextImage}
                             >
-                                &gt;
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                                </svg>
                             </button>
                         </motion.div>
                     </motion.div>
