@@ -13,6 +13,22 @@ const Footer = () => {
         setIsMounted(true);
     }, []);
 
+    useEffect(() => {
+        const handleKeyPress = (event: KeyboardEvent) => {
+            if (event.key === 'Enter') {
+                handleAdminAccess();
+            }
+        };
+
+        if (showAdminPrompt) {
+            window.addEventListener('keydown', handleKeyPress);
+        }
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyPress);
+        };
+    }, [showAdminPrompt, adminKey]);
+
     const handleGetDirections = () => {
         if (!isMounted || typeof window === 'undefined') return;
         window?.open(`https://www.google.com/maps/search/?api=1&query=6.456559134970387,3.3842979366622847`);
