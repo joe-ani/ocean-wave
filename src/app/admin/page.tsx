@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
+import { COLORS } from '../../data/colors';
 
 // Define the product schema
 const productSchema = z.object({
@@ -235,6 +236,10 @@ export default function AdminPage() {
         trackMouse: true
     });
 
+    const handleColorClick = (colorName: string) => {
+        reset({ description: colorName });
+    };
+
     if (!isAuthorized) {
         return null; // or return a loading state
     }
@@ -288,6 +293,29 @@ export default function AdminPage() {
                             {errors.description && (
                                 <p className="text-red-500 text-sm mt-2">{errors.description.message}</p>
                             )}
+                            <div className="mt-2 flex flex-wrap gap-1 sm:gap-2">
+                                {COLORS.map((color) => (
+                                    <motion.button
+                                        key={color.id}
+                                        onClick={() => handleColorClick(color.name)}
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        className={`px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-medium 
+                                        transition-all duration-200
+                                          ${color.id === 'mixed'
+                                                ? 'bg-gradient-to-r from-pink-300 via-purple-300 via-blue-300 via-green-300 via-yellow-300 to-red-300 text-black'
+                                                : ''
+                                            }
+                                        `}
+                                        style={{
+                                            backgroundColor: color.id !== 'mixed' ? color.hex : undefined,
+                                            color: ['black', 'burgundy', 'brown'].includes(color.id) ? 'white' : 'black',
+                                        }}
+                                    >
+                                        {color.name}
+                                    </motion.button>
+                                ))}
+                            </div>
                         </div>
 
                         <div>
