@@ -483,7 +483,7 @@ const Hero = () => {
                     {/* Highlight container */}
                     <motion.div
                         variants={cardVariants}
-                        className="w-[170px] md:w-[200px] highlight-box rounded-[16px] p-[14px] md:p-[20px] md:rounded-[30px] z-10 space-y-2 md:space-y-4 absolute flex flex-col top-[-120px] md:top-[0px]">
+                        className="w-[170px] md:w-[200px] highlight-box border-[1.5px] border-[#feef88] rounded-[16px] p-[14px] md:p-[20px] md:rounded-[30px] z-10 space-y-2 md:space-y-4 absolute flex flex-col top-[-120px] md:top-[0px]">
                         <div className="flex justify-between items-center relative">
                             <div className="bg-[#fee88e] text-[8px] md:text-[14px] text-black font-semibold rounded-full p-1 px-3 md:px-5">Featured</div>
                             <motion.div

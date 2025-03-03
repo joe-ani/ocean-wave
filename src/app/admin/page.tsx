@@ -24,19 +24,20 @@ interface Product {
     name: string;
     price: string;
     description: string;
-    imageUrl: string;
+    imageUrls: string[];
 }
 
 export default function AdminPage() {
     const router = useRouter();
     const [isAuthorized, setIsAuthorized] = useState(false);
     const [products, setProducts] = useState<Product[]>([]);
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
     const [showImageModal, setShowImageModal] = useState<string | null>(null);
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
     const formRef = useRef<HTMLDivElement>(null);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm<ProductFormData>({
         resolver: zodResolver(productSchema)
@@ -77,20 +78,26 @@ export default function AdminPage() {
             setIsLoading(true);
             console.log('📝 Submitting product data:', data);
 
-            let imageUrl = '';
-            if (selectedFile) {
+            let imageUrls: string[] = [];
+            if (selectedFiles.length > 0) {
                 try {
-                    console.log('🖼️ Uploading image...');
-                    const fileUpload = await storage.createFile(
-                        appwriteConfig.storageId,
-                        ID.unique(),
-                        selectedFile
+                    console.log('🖼️ Uploading images...');
+                    const uploadPromises = selectedFiles.map(file =>
+                        storage.createFile(
+                            appwriteConfig.storageId,
+                            ID.unique(),
+                            file
+                        )
                     );
-                    imageUrl = `https://cloud.appwrite.io/v1/storage/buckets/${appwriteConfig.storageId}/files/${fileUpload.$id}/view?project=67b6273400341a9582d9`;
-                    console.log('✅ Image uploaded successfully');
+
+                    const uploadedFiles = await Promise.all(uploadPromises);
+                    imageUrls = uploadedFiles.map(file =>
+                        `https://cloud.appwrite.io/v1/storage/buckets/${appwriteConfig.storageId}/files/${file.$id}/view?project=67b6273400341a9582d9`
+                    );
+                    console.log('✅ Images uploaded successfully');
                 } catch (fileError: any) {
                     console.error('❌ File upload error:', fileError);
-                    toast.error('Failed to upload image. Please try again.');
+                    toast.error('Failed to upload images. Please try again.');
                     setIsLoading(false);
                     return;
                 }
@@ -107,7 +114,7 @@ export default function AdminPage() {
                             name: data.name,
                             price: data.price,
                             description: data.description,
-                            imageUrl: imageUrl || editingProduct.imageUrl,
+                            imageUrls: imageUrls.length > 0 ? imageUrls : editingProduct.imageUrls,
                         }
                     );
                     console.log('✅ Product updated successfully');
@@ -129,7 +136,7 @@ export default function AdminPage() {
                             name: data.name,
                             price: data.price,
                             description: data.description,
-                            imageUrl,
+                            imageUrls,
                         }
                     );
                     console.log('✅ Product created successfully:', newProduct);
@@ -143,7 +150,7 @@ export default function AdminPage() {
             }
 
             reset();
-            setSelectedFile(null);
+            setSelectedFiles([]);
             setEditingProduct(null);
             await fetchProducts();
         } catch (error: any) {
@@ -177,6 +184,28 @@ export default function AdminPage() {
             description: product.description,
         });
         formRef.current?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    const handleNextImage = () => {
+        if (showImageModal && products.length > 0) {
+            const product = products.find(p => p.imageUrls.includes(showImageModal));
+            if (product) {
+                const nextIndex = (currentImageIndex + 1) % product.imageUrls.length;
+                setCurrentImageIndex(nextIndex);
+                setShowImageModal(product.imageUrls[nextIndex]);
+            }
+        }
+    };
+
+    const handlePrevImage = () => {
+        if (showImageModal && products.length > 0) {
+            const product = products.find(p => p.imageUrls.includes(showImageModal));
+            if (product) {
+                const prevIndex = (currentImageIndex - 1 + product.imageUrls.length) % product.imageUrls.length;
+                setCurrentImageIndex(prevIndex);
+                setShowImageModal(product.imageUrls[prevIndex]);
+            }
+        }
     };
 
     if (!isAuthorized) {
@@ -235,22 +264,54 @@ export default function AdminPage() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">Product Image</label>
-                            <div className="mt-1 flex justify-center px-4 sm:px-6 pt-4 pb-4 sm:pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-gray-400 transition-all duration-200">
-                                <div className="space-y-1 text-center">
-                                    <svg className="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                                        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
-                                    <div className="flex text-sm text-gray-600">
-                                        <input
-                                            type="file"
-                                            onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-                                            className="relative w-full cursor-pointer rounded-md font-medium text-gray-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-gray-400 focus-within:ring-offset-2 hover:text-gray-800"
-                                            accept="image/*"
-                                        />
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">Product Images</label>
+                            <div className="mt-1 flex flex-col space-y-4">
+                                <div className="flex justify-center px-4 sm:px-6 pt-4 pb-4 sm:pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-gray-400 transition-all duration-200">
+                                    <div className="space-y-1 text-center">
+                                        <svg className="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
+                                        <div className="flex text-sm text-gray-600">
+                                            <input
+                                                type="file"
+                                                multiple
+                                                onChange={(e) => {
+                                                    const files = Array.from(e.target.files || []);
+                                                    setSelectedFiles(files);
+                                                }}
+                                                className="relative w-full cursor-pointer rounded-md font-medium text-gray-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-gray-400 focus-within:ring-offset-2 hover:text-gray-800"
+                                                accept="image/*"
+                                            />
+                                        </div>
+                                        <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB (Max 3 images)</p>
                                     </div>
-                                    <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
                                 </div>
+
+                                {/* Selected Files Preview */}
+                                {selectedFiles.length > 0 && (
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                        {selectedFiles.map((file, index) => (
+                                            <div key={index} className="relative group">
+                                                <img
+                                                    src={URL.createObjectURL(file)}
+                                                    alt={`Selected ${index + 1}`}
+                                                    className="w-full h-24 object-cover rounded-lg"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setSelectedFiles(selectedFiles.filter((_, i) => i !== index));
+                                                    }}
+                                                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                >
+                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         </div>
 
@@ -306,14 +367,19 @@ export default function AdminPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                         {products.map((product) => (
                             <div key={product.$id} className="bg-white rounded-lg sm:rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100">
-                                {product.imageUrl && (
+                                {product.imageUrls && product.imageUrls.length > 0 && (
                                     <div className="relative h-48 sm:h-64 overflow-hidden">
-                                        <img
-                                            src={product.imageUrl}
-                                            alt={product.name}
-                                            className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-300 cursor-pointer"
-                                            onClick={() => setShowImageModal(product.imageUrl)}
-                                        />
+                                        {product.imageUrls.length > 0 && (
+                                            <img
+                                                src={product.imageUrls[0]}
+                                                alt={`${product.name} 1`}
+                                                className="w-full h-full object-cover cursor-pointer"
+                                                onClick={() => {
+                                                    setCurrentImageIndex(0);
+                                                    setShowImageModal(product.imageUrls[0]);
+                                                }}
+                                            />
+                                        )}
                                     </div>
                                 )}
                                 <div className="p-4 sm:p-6">
@@ -351,13 +417,25 @@ export default function AdminPage() {
                         onClick={() => setShowImageModal(null)}
                     >
                         <motion.div
-                            className="bg-white p-4 sm:p-6 rounded-lg shadow-xl w-full max-w-[90%] sm:max-w-[80%] lg:max-w-[60%] max-h-[calc(100vh-60px)] overflow-auto"
+                            className="bg-white p-4 sm:p-6 rounded-lg shadow-xl w-full max-w-[90%] sm:max-w-[80%] lg:max-w-[60%] max-h-[calc(100vh-60px)] overflow-auto relative"
                             initial={{ scale: 0.8 }}
                             animate={{ scale: 1 }}
                             exit={{ scale: 0.8 }}
                             onClick={(e) => e.stopPropagation()}
                         >
                             <img src={showImageModal} alt="Product" className="w-full h-auto object-contain" />
+                            <button
+                                className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full"
+                                onClick={handlePrevImage}
+                            >
+                                &lt;
+                            </button>
+                            <button
+                                className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full"
+                                onClick={handleNextImage}
+                            >
+                                &gt;
+                            </button>
                         </motion.div>
                     </motion.div>
                 )}
