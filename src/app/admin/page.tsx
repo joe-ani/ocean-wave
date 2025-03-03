@@ -236,7 +236,8 @@ export default function AdminPage() {
         trackMouse: true
     });
 
-    const handleColorClick = (colorName: string) => {
+    const handleColorClick = (colorName: string, event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
         reset({ description: colorName });
     };
 
@@ -297,7 +298,7 @@ export default function AdminPage() {
                                 {COLORS.map((color) => (
                                     <motion.button
                                         key={color.id}
-                                        onClick={() => handleColorClick(color.name)}
+                                        onClick={(e) => handleColorClick(color.name, e)}
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
                                         className={`px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-medium 
