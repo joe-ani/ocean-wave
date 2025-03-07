@@ -1,7 +1,7 @@
 const reviewData = [
     {
         name: "Chioma",
-        quote: "D'Fugo Hair's quality and service is truly exceptional. \nNever felt more confident with my look!",
+        quote: "DFugo Hair's quality and service is truly exceptional. \nNever felt more confident with my look!",
         img: "/images/customer1.jpg",
     },
     {
