@@ -1,14 +1,15 @@
 'use client';
 
+import { useEffect } from 'react';
+
 const ActualComponent = () => {
-  // Here you can safely use window-related code
-  // For example:
-  const handleScroll = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      // Implementation
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <div>

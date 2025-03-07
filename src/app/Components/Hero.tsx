@@ -9,7 +9,6 @@ import { useRouter } from "next/navigation";
 
 const Hero = () => {
     const { activeLink, setActiveLink } = useActiveLink();
-    const listRef = useRef<HTMLLIElement | null>(null);
     const [menuOpen, setMenuOpen] = useState(false);
     const router = useRouter();
     const [searchQuery, setSearchQuery] = useState("");
@@ -157,25 +156,6 @@ const Hero = () => {
             opacity: 1,
             transition: { duration: 1, ease: "easeOut", delay: 0.6 },
         },
-    };
-
-    const menuVariants = {
-        open: {
-            height: "auto",
-            opacity: 1,
-            transition: {
-                duration: 0.4,
-                ease: "easeInOut"
-            }
-        },
-        closed: {
-            height: 0,
-            opacity: 0,
-            transition: {
-                duration: 0.4,
-                ease: "easeInOut"
-            }
-        }
     };
 
     const mobileMenuVariants = {
@@ -411,7 +391,8 @@ const Hero = () => {
             <div className="cont2 w-full flex flex-col-reverse md:flex-row justify-around items-center px-8 md:px-20 lg:px-40 pb-10 mb-11 pt-28 mb:pt-0">
                 {/* Hero Text Section - Original styling */}
                 <div className="hero-text text-left pt-28 md:pt-0">
-                    <p className="py-3 font-normal text-sm md:text-base">D'Fugo Hair</p>
+                    <p className="py-3 font-normal text-sm md:text-base">D&apos;Fugo Hair</p>
+
                     <div className="w-[60%] h-[1px] bg-gradient-to-r from-[#FEEF88] to-transparent rounded-full mx-0"></div>
                     <motion.div
                         variants={heroTextVariants}

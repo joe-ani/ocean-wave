@@ -1,7 +1,7 @@
 "use client"
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Footer = () => {
@@ -13,6 +13,23 @@ const Footer = () => {
         setIsMounted(true);
     }, []);
 
+    const handleAdminAccess = useCallback(() => {
+        if (!isMounted || typeof window === 'undefined') return;
+
+        try {
+            if (adminKey === 'fugo101') {
+                window.localStorage.setItem('adminKey', adminKey);
+                window.location.href = '/admin';
+            } else {
+                alert('Invalid admin key');
+                setAdminKey('');
+            }
+        } catch (error) {
+            console.error('Error accessing admin:', error);
+            alert('An error occurred');
+        }
+    }, [adminKey, isMounted]);
+
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
             if (event.key === 'Enter') {
@@ -20,27 +37,19 @@ const Footer = () => {
             }
         };
 
-        if (showAdminPrompt) {
+        if (showAdminPrompt && typeof window !== 'undefined') {
             window.addEventListener('keydown', handleKeyPress);
+            return () => window.removeEventListener('keydown', handleKeyPress);
         }
-
-        return () => {
-            window.removeEventListener('keydown', handleKeyPress);
-        };
-    }, [showAdminPrompt, adminKey]);
+    }, [showAdminPrompt, adminKey, handleAdminAccess, isMounted]);
 
     const handleGetDirections = () => {
         if (!isMounted || typeof window === 'undefined') return;
-        window?.open(`https://www.google.com/maps/search/?api=1&query=6.456559134970387,3.3842979366622847`);
-    };
-
-    const handleAdminAccess = () => {
-        if (adminKey === 'fugo101') {
-            localStorage.setItem('adminKey', adminKey);
-            window.location.href = '/admin';
-        } else {
-            alert('Invalid admin key');
-            setAdminKey('');
+        try {
+            window?.open(`https://www.google.com/maps/search/?api=1&query=6.456559134970387,3.3842979366622847`);
+        } catch (error) {
+            console.error('Error getting directions:', error);
+            alert('An error occurred');
         }
     };
 
@@ -141,13 +150,13 @@ const Footer = () => {
                     <div>
                         <h3 className="text-lg font-medium mb-4">Follow Us</h3>
                         <div className="flex space-x-4">
-                            <a href="#" className="text-gray-400 hover:text-white transition">
+                            <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition">
                                 FB
                             </a>
-                            <a href="https://www.tiktok.com/@d_fugo_hair" className="text-gray-400 hover:text-white transition">
+                            <a href="https://www.tiktok.com/@d_fugo_hair" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition">
                                 TK
                             </a>
-                            <a href="https://www.instagram.com/@d_fugo_hair" className="text-gray-400 hover:text-white transition">
+                            <a href="https://www.instagram.com/d_fugo_hair" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition">
                                 IG
                             </a>
                         </div>

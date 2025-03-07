@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { databases, storage, appwriteConfig } from '../../lib/appwrite';
 import { ID, Query } from 'appwrite';
 import { useForm } from 'react-hook-form';
@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
 import { COLORS } from '../../data/colors';
 import type { Variants } from 'framer-motion';
+import Image from 'next/image';
 
 // Define the product schema
 const productSchema = z.object({
@@ -20,8 +21,12 @@ const productSchema = z.object({
     description: z.string().min(1, "Description is required"),
 });
 
-type ProductFormData = z.infer<typeof productSchema>;
+type AppwriteError = {
+    message: string;
+    code: number;
+};
 
+// Update Product interface
 interface Product {
     $id: string;
     name: string;
@@ -30,7 +35,13 @@ interface Product {
     imageUrls: string[];
 }
 
-export default function AdminPage() {
+interface ProductFormData {
+    name: string;
+    price: string;
+    description: string;
+}
+
+const AdminPage = () => {
     const router = useRouter();
     const [isAuthorized, setIsAuthorized] = useState(false);
     const [products, setProducts] = useState<Product[]>([]);
@@ -47,35 +58,33 @@ export default function AdminPage() {
         resolver: zodResolver(productSchema)
     });
 
-    useEffect(() => {
-        // Check for admin authorization
-        const checkAuth = () => {
-            const adminKey = localStorage.getItem('adminKey');
-            if (adminKey !== 'fugo101') {
-                router.push('/');
-                return;
-            }
-            setIsAuthorized(true);
-            fetchProducts();
-        };
-
-        checkAuth();
-    }, [router]);
-
-    const fetchProducts = async () => {
+    const fetchProducts = useCallback(async () => {
         try {
             const response = await databases.listDocuments(
                 appwriteConfig.databaseId,
                 appwriteConfig.productsCollectionId,
                 [sortOrder === 'asc' ? Query.orderAsc('$createdAt') : Query.orderDesc('$createdAt')]
             );
-            console.log('✅ Products fetched successfully:', response);
             setProducts(response.documents as unknown as Product[]);
-        } catch (error: any) {
-            console.error('❌ Error fetching products:', error);
-            toast.error('Failed to fetch products. Please check your Appwrite configuration.');
+        } catch (error) {
+            console.error('Error fetching products:', error);
+            toast.error('Failed to fetch products');
         }
-    };
+    }, [sortOrder]);
+
+    useEffect(() => {
+        const checkAuth = async () => {
+            const adminKey = localStorage.getItem('adminKey');
+            if (adminKey !== 'fugo101') {
+                router.push('/');
+                return;
+            }
+            setIsAuthorized(true);
+            await fetchProducts();
+        };
+
+        checkAuth();
+    }, [router, fetchProducts]);
 
     const onSubmit = async (data: ProductFormData) => {
         try {
@@ -95,12 +104,20 @@ export default function AdminPage() {
                     );
 
                     const uploadedFiles = await Promise.all(uploadPromises);
-                    imageUrls = uploadedFiles.map(file =>
-                        `https://cloud.appwrite.io/v1/storage/buckets/${appwriteConfig.storageId}/files/${file.$id}/view?project=67b6273400341a9582d9`
-                    );
+                    imageUrls = uploadedFiles.map(file => {
+                        if (file && file.$id) {
+                            return `https://cloud.appwrite.io/v1/storage/buckets/${appwriteConfig.storageId}/files/${file.$id}/view?project=67b6273400341a9582d9`;
+                        } else {
+                            console.error('❌ File upload error: missing file ID');
+                            toast.error('Failed to upload images. Please try again.');
+                            setIsLoading(false);
+                            return ""; // Return a default value or handle the error as needed
+                        }
+                    });
                     console.log('✅ Images uploaded successfully');
-                } catch (fileError: any) {
-                    console.error('❌ File upload error:', fileError);
+                } catch (fileError: unknown) {
+                    const appwriteError = fileError as AppwriteError;
+                    console.error('❌ File upload error:', appwriteError);
                     toast.error('Failed to upload images. Please try again.');
                     setIsLoading(false);
                     return;
@@ -123,8 +140,9 @@ export default function AdminPage() {
                     );
                     console.log('✅ Product updated successfully');
                     toast.success('Product updated successfully');
-                } catch (updateError: any) {
-                    console.error('❌ Product update error:', updateError);
+                } catch (updateError: unknown) {
+                    const appwriteError = updateError as AppwriteError;
+                    console.error('❌ Product update error:', appwriteError);
                     toast.error('Failed to update product. Please try again.');
                     setIsLoading(false);
                     return;
@@ -145,8 +163,9 @@ export default function AdminPage() {
                     );
                     console.log('✅ Product created successfully:', newProduct);
                     toast.success('Product created successfully');
-                } catch (createError: any) {
-                    console.error('❌ Product creation error:', createError);
+                } catch (createError: unknown) {
+                    const appwriteError = createError as AppwriteError;
+                    console.error('❌ Product creation error:', appwriteError);
                     toast.error('Failed to create product. Please try again.');
                     setIsLoading(false);
                     return;
@@ -157,26 +176,12 @@ export default function AdminPage() {
             setSelectedFiles([]);
             setEditingProduct(null);
             await fetchProducts();
-        } catch (error: any) {
-            console.error('❌ General error:', error);
+        } catch (error: unknown) {
+            const appwriteError = error as AppwriteError;
+            console.error('❌ General error:', appwriteError);
             toast.error('An error occurred. Please try again.');
         } finally {
             setIsLoading(false);
-        }
-    };
-
-    const handleDelete = async (productId: string) => {
-        try {
-            await databases.deleteDocument(
-                appwriteConfig.databaseId,
-                appwriteConfig.productsCollectionId,
-                productId
-            );
-            toast.success('Product deleted successfully');
-            fetchProducts();
-        } catch (error) {
-            console.error('Error deleting product:', error);
-            toast.error('Failed to delete product');
         }
     };
 
@@ -247,9 +252,9 @@ export default function AdminPage() {
     }
 
     const imageVariants: Variants = {
-        initial: { opacity: 0, x: 100, position: "relative" as "relative" },
-        animate: { opacity: 1, x: 0, position: "relative" as "relative" },
-        exit: { opacity: 0, x: -100, position: "absolute" as "absolute" },
+        initial: { opacity: 0, x: 100, position: "relative" },
+        animate: { opacity: 1, x: 0, position: "relative" },
+        exit: { opacity: 0, x: -100, position: "absolute" },
     };
 
     return (
@@ -355,9 +360,11 @@ export default function AdminPage() {
                                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                                         {selectedFiles.map((file, index) => (
                                             <div key={index} className="relative group">
-                                                <img
+                                                <Image
                                                     src={URL.createObjectURL(file)}
                                                     alt={`Selected ${index + 1}`}
+                                                    width={100}
+                                                    height={100}
                                                     className="w-full h-24 object-cover rounded-lg"
                                                 />
                                                 <button
@@ -433,9 +440,11 @@ export default function AdminPage() {
                                 {product.imageUrls && product.imageUrls.length > 0 && (
                                     <div className="relative h-48 sm:h-64 overflow-hidden">
                                         {product.imageUrls.length > 0 && (
-                                            <img
+                                            <Image
                                                 src={product.imageUrls[0]}
                                                 alt={`${product.name} 1`}
+                                                width={100}
+                                                height={100}
                                                 className="w-full h-full object-cover cursor-pointer"
                                                 onClick={() => {
                                                     setCurrentImageIndex(0);
@@ -502,9 +511,11 @@ export default function AdminPage() {
                                     transition={{ duration: 0.5, ease: "easeInOut" }}
                                     className="w-full h-auto object-contain"
                                 >
-                                    <img
+                                    <Image
                                         src={showImageModal}
                                         alt="Product"
+                                        width={100}
+                                        height={100}
                                         className="w-full h-auto object-contain"
                                     />
                                 </motion.div>
@@ -568,4 +579,6 @@ export default function AdminPage() {
             </AnimatePresence>
         </div>
     );
-}
+};
+
+export default AdminPage;

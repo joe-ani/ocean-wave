@@ -26,7 +26,6 @@ export default function ShopContent() {
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [activeColor, setActiveColor] = useState<string | null>(null);
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
@@ -290,7 +289,7 @@ export default function ShopContent() {
           <div className="text-2xl sm:text-4xl mb-2 sm:mb-4">🔍</div>
           <h3 className="text-lg sm:text-2xl font-semibold mb-1 sm:mb-2">No products found</h3>
           <p className="text-gray-600 text-xs sm:text-base">
-            We couldn't find any products matching your search.
+            We couldn&apos;t find any products matching your search.
             <br />
             Try using different keywords or browsing our categories.
           </p>

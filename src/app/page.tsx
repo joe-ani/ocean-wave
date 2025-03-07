@@ -9,7 +9,6 @@ import ContactForm from "./Components/ContactForm";
 import Footer from "./Components/Footer";
 import Nav from "./Components/Nav";
 import WhatsAppButton from "./Components/WhatsAppButton";
-import ClientMap from "./Components/ClientMap";
 
 const HomePage = () => {
   return (
@@ -19,7 +18,7 @@ const HomePage = () => {
       {/* ----------- */}
       {/* section 1 */}
       <div id="section1" className="flex flex-col px-0 md:px-40 pt-28 sm:pt-40 pb-4 text-[#333333]">
-        <h2 className="text-xs md:text-sm font-[500] px-5 md:px-0">HERE's</h2>
+        <h2 className="text-xs md:text-sm font-[500] px-5 md:px-0">HERE&apos;s</h2>
         <h1 className="text-2xl md:text-4xl font-[600] py-2 px-5 md:px-0">What we offer.</h1>
         {/* card component*/}
         <div className="py-20">
@@ -65,7 +64,7 @@ const HomePage = () => {
       </div>
       {/* section 6 */}
       <div id="section6" className="flex flex-col font-[600] px-0 md:px-40 py-2 text-[#333333]">
-        <h2 className="text-xs md:text-sm px-5 md:px-0">About d'fugo hair</h2>
+        <h2 className="text-xs md:text-sm px-5 md:px-0">About d&apos;fugo hair</h2>
         <h1 className="text-2xl md:text-4xl py-2 px-5 md:px-0">Founder and CEO.</h1>
         {/* card component*/}
         <div className="py-20 flex justify-center">

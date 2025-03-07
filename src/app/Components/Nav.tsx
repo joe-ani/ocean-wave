@@ -98,26 +98,6 @@ const Nav = () => {
     setSearchQuery("");
   };
 
-  // Add these variants for the mobile menu animations
-  const mobileMenuVariants = {
-    closed: {
-      opacity: 0,
-      y: "-100%",
-      transition: {
-        duration: 0.3,
-        ease: [0.4, 0, 0.2, 1],
-      }
-    },
-    open: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.3,
-        ease: [0.4, 0, 0.2, 1],
-      }
-    }
-  };
-
   const menuItemVariants = {
     closed: { opacity: 0, y: -20 },
     open: (i: number) => ({
