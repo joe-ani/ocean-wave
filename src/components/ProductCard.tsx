@@ -2,9 +2,21 @@
 import React, { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import Image from "next/image";
-import { Heart, TrendingUp } from "lucide-react";
-import { Product } from "@/src/data/products";
+import { Heart } from "lucide-react";
 import { useRouter } from "next/navigation";
+
+// Match the Appwrite data structure
+interface Product {
+  $id: string;
+  name: string;
+  price: string;
+  description: string;
+  imageUrls: string[];
+}
+
+interface ProductCardProps {
+  product: Product;
+}
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -25,7 +37,7 @@ const likeColour = {
   off: "#ffffff50"
 };
 
-export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
+export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [isLiked, setIsLiked] = useState(false);
   const ref = useRef(null);
   const inView = useInView(ref);
@@ -34,19 +46,17 @@ export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   const handleProductClick = () => {
     try {
       const slug = product.name.toLowerCase().replace(/\s+/g, "-");
+      // Store complete product data including all images
       const productData = {
         name: product.name,
         price: product.price,
-        img: product.image, // Ensure this matches the expected property in the product page
-        // add other necessary properties
+        description: product.description,
+        imageUrls: product.imageUrls // Pass the entire imageUrls array
       };
       localStorage.setItem("selectedProduct", JSON.stringify(productData));
       router.push(`/product/${slug}`);
     } catch (error) {
       console.error("Error saving product data:", error);
-      // Fallback navigation
-      const slug = product.name.toLowerCase().replace(/\s+/g, "-");
-      router.push(`/product/${slug}`);
     }
   };
 
@@ -85,14 +95,21 @@ export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
 
       {/* Product Image */}
       <div className="w-full h-[60%] relative flex items-center justify-center">
-        <Image
-          className="object-contain w-full h-full"
-          width={120}
-          height={240}
-          alt={product.name || "Product image"}
-          src={product.image}
-          priority={true}
-        />
+        {product.imageUrls && product.imageUrls.length > 0 ? (
+          <Image
+            className="object-contain w-full h-full"
+            width={120}
+            height={240}
+            alt={product.name || "Product image"}
+            src={product.imageUrls[0]} // Use first image from array
+            priority={true}
+            unoptimized // Add this to fix Image domain issues temporarily
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gray-200">
+            <p className="text-gray-400">No Image</p>
+          </div>
+        )}
       </div>
 
       {/* Price Card */}
@@ -104,28 +121,8 @@ export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
         <div className="w-full h-[1px] bg-[#dddd]"></div>
         <div className="flex items-center justify-between px-2 sm:px-3">
           <p className="text-white font-medium text-xs">₦{product.price}</p>
-          <div className="flex items-center gap-1">
-            <span className="text-white text-[10px] sm:text-xs">({product.rating})</span>
-            <TrendingUp className="text-green-400" size={16} />
-          </div>
         </div>
       </div>
-
-      {/* Badges */}
-      {(product.isNew || product.isBestSeller) && (
-        <div className="absolute top-2 sm:top-4 left-2 sm:left-4 flex flex-col gap-1 sm:gap-2">
-          {product.isNew && (
-            <span className="bg-black text-white px-2 py-0.5 rounded-full text-[10px] sm:text-xs">
-              New
-            </span>
-          )}
-          {product.isBestSeller && (
-            <span className="bg-yellow-400 text-black px-2 py-0.5 rounded-full text-[10px] sm:text-xs">
-              Best Seller
-            </span>
-          )}
-        </div>
-      )}
     </motion.div>
   );
 };

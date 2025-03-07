@@ -3,36 +3,70 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, Variants } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import productData from "../latestProductData"; // Import Product interface
 import Link from "next/link";
 import { useActiveLink } from "../context/ActiveLinkContext";
 import { Heart, TrendingUp, ArrowRight } from "lucide-react";
+import { databases, appwriteConfig } from '@/src/lib/appwrite';
+import { Query } from 'appwrite';
 
-// Remove the local Product interface since we're importing it
+interface Product {
+  $id: string;
+  name: string;
+  price: string;
+  description: string;
+  imageUrls: string[];
+  $createdAt: string;
+}
 
 const LatestProduct: React.FC = () => {
-  const [likeColour] = useState({ on: "#ff0000", off: "#ffffff" });
   const { setActiveLink } = useActiveLink();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [likedProducts, setLikedProducts] = useState<{ [key: string]: boolean }>({});
 
-  // Move useInView outside of render loop
   const { ref: containerRef, inView: containerInView } = useInView({
     triggerOnce: true,
     threshold: 0.1
   });
 
-  const [likedProducts, setLikedProducts] = useState<boolean[]>(() =>
-    productData.map(product => Boolean(product.likeStatus))
-  );
+  // Fetch latest products from Appwrite
+  useEffect(() => {
+    const fetchLatestProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await databases.listDocuments(
+          appwriteConfig.databaseId,
+          appwriteConfig.productsCollectionId,
+          [
+            Query.orderDesc('$createdAt'), // Order by creation date, newest first
+            Query.limit(4) // Get only 4 products
+          ]
+        );
+        setProducts(response.documents.map(doc => ({
+          $id: doc.$id,
+          name: doc.name,
+          price: doc.price,
+          description: doc.description,
+          imageUrls: doc.imageUrls,
+          $createdAt: doc.$createdAt
+        })));
+      } catch (error) {
+        console.error('Error fetching latest products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const toggleLike = (index: number) => {
-    setLikedProducts(prev => {
-      const newLikes = [...prev];
-      newLikes[index] = !newLikes[index];
-      return newLikes;
-    });
+    fetchLatestProducts();
+  }, []);
+
+  const toggleLike = (productId: string) => {
+    setLikedProducts(prev => ({
+      ...prev,
+      [productId]: !prev[productId]
+    }));
   };
 
-  // Updated animation variants
   const cardVariants: Variants = {
     hidden: {
       opacity: 0,
@@ -69,64 +103,92 @@ const LatestProduct: React.FC = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="latest-product-container flex flex-col items-center space-y-12">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[...Array(4)].map((_, i) => (
+            <div
+              key={i}
+              className="w-[150px] h-[200px] sm:w-[200px] sm:h-[250px] bg-gray-200 rounded-[15px] sm:rounded-[25px] animate-pulse"
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="latest-product-container flex flex-col items-center space-y-12">
-      <div
-        ref={containerRef}
-        className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6"
-      >
-        {productData.map((product, index) => (
+      <div ref={containerRef} className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {products.map((product) => (
           <Link
             href={`/product/${product.name.toLowerCase().replace(/\s+/g, '-')}`}
-            key={index}
+            key={product.$id}
+            onClick={() => {
+              localStorage.setItem("selectedProduct", JSON.stringify({
+                name: product.name,
+                price: product.price,
+                description: product.description,
+                imageUrls: product.imageUrls
+              }));
+            }}
           >
             <motion.div
-              className="latest-product-card w-[150px] h-[200px] sm:w-[200px] sm:h-[250px] flex flex-col items-center p-4 bg-slate-200 relative rounded-[15px] sm:rounded-[25px] cursor-pointer transition-colors duration-200"
+              className="latest-product-card w-[150px] h-[200px] sm:w-[200px] sm:h-[250px] flex flex-col items-center p-4 
+              bg-slate-200 relative rounded-[15px] sm:rounded-[25px] cursor-pointer transition-colors duration-200"
               initial="hidden"
               animate={containerInView ? "visible" : "hidden"}
               whileHover="hover"
               whileTap="tap"
               variants={cardVariants}
-              style={{
-                backfaceVisibility: "hidden",
-                WebkitFontSmoothing: "subpixel-antialiased"
-              }}
             >
               {/* Heart icon */}
               <div
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  toggleLike(index);
+                  toggleLike(product.$id);
                 }}
-                className="absolute right-4 top-4 z-10 p-2 cursor-pointer hover:scale-110 transition-transform"
+                className="absolute right-2 sm:right-4 top-2 sm:top-4 z-10 p-1 sm:p-2 cursor-pointer hover:scale-110 transition-transform"
               >
                 <Heart
-                  className={`stroke-none`}
-                  fill={likedProducts[index] ? likeColour.on : likeColour.off}
-                  size={36}
+                  className="stroke-none"
+                  fill={likedProducts[product.$id] ? "#ff3b5c" : "#ffffff50"}
+                  size={24}
                   strokeWidth={1}
                 />
               </div>
 
               {/* Product Image */}
               <div className="w-full h-[60%] relative flex items-center justify-center">
-                <Image
-                  className="object-contain w-full h-full"
-                  width={120}
-                  height={240}
-                  alt={product.name}
-                  src={product.img}
-                />
+                {product.imageUrls && product.imageUrls.length > 0 ? (
+                  <Image
+                    className="object-contain w-full h-full"
+                    width={120}
+                    height={240}
+                    alt={product.name}
+                    src={product.imageUrls[0]}
+                    priority
+                    unoptimized
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                    <p className="text-gray-400">No Image</p>
+                  </div>
+                )}
               </div>
 
               {/* Price Card */}
-              <div className="price-card w-[90%] h-[60px] sm:h-[80px] rounded-[10px] sm:rounded-[15px] absolute bottom-4 flex flex-col justify-center space-y-2">
-                <div className="px-[10px] text-white font-semibold text-sm sm:text-base">{product.name}</div>
-                <div className="w-[100%] h-[1px] bg-[#dddd]"></div>
-                <div className="flex items-center justify-between px-[10px]">
-                  <p className="text-white font-medium text-xs sm:text-sm">{product.price}k</p>
-                  <TrendingUp className="text-white" size={20} />
+              <div className="price-card w-[90%] h-[70px] sm:h-[80px] rounded-[10px] sm:rounded-[15px] 
+              absolute bottom-3 bg-black/80 backdrop-blur-sm flex flex-col justify-center gap-1 sm:gap-2">
+                <div className="px-2 sm:px-3 text-white font-semibold text-xs sm:text-sm truncate">
+                  {product.name}
+                </div>
+                <div className="w-full h-[1px] bg-[#dddd]"></div>
+                <div className="flex items-center justify-between px-2 sm:px-3">
+                  <p className="text-white font-medium text-xs">₦{product.price}</p>
+                  <TrendingUp className="text-green-400" size={16} />
                 </div>
               </div>
             </motion.div>
@@ -137,15 +199,10 @@ const LatestProduct: React.FC = () => {
       {/* Shop button */}
       <Link href={"/shop"} onClick={() => setActiveLink("Shop")}>
         <motion.button
-          whileHover={{
-            scale: 1.02,
-            transition: { type: "spring", stiffness: 400, damping: 10 }
-          }}
-          whileTap={{
-            scale: 0.95,
-            transition: { type: "spring", stiffness: 400, damping: 15 }
-          }}
-          className="font-medium bg-gradient-to-tr from-[#fee88e] to-[#CFAA3D] text-[#111] text-base sm:text-[20px] rounded-full p-2 px-8 flex items-center gap-2"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.95 }}
+          className="font-medium bg-gradient-to-tr from-[#fee88e] to-[#CFAA3D] text-[#111] 
+          text-base sm:text-[20px] rounded-full p-2 px-8 flex items-center gap-2"
         >
           Shop
           <ArrowRight size={20} />

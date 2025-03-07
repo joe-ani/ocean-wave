@@ -2,13 +2,25 @@
 import { motion } from "framer-motion"
 import Image from "next/image"
 import { useState, useMemo, useEffect } from "react"
-import { products } from "@/src/data/products"
 import { ProductCard } from "@/src/components/ProductCard"
 import { useSearchParams } from 'next/navigation'
 import { CATEGORIES } from '@/src/data/categories'
 import { COLORS } from '@/src/data/colors'
+import { databases, appwriteConfig } from '@/src/lib/appwrite'
+
+// Remove products import since we're using Appwrite data
+// import { products } from "@/src/data/products"
+
+interface Product {
+  $id: string;
+  name: string;
+  price: string;
+  description: string;
+  imageUrls: string[];
+}
 
 export default function ShopContent() {
+  // =============== STATE MANAGEMENT ===============
   const searchParams = useSearchParams();
   const initialSearchQuery = searchParams.get('search') || "";
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
@@ -17,11 +29,16 @@ export default function ShopContent() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
+  // =============== LIFECYCLE HOOKS ===============
+  // Component Mount Handler
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
+  // Scroll Handler
   useEffect(() => {
     if (!isMounted) return;
 
@@ -35,6 +52,7 @@ export default function ShopContent() {
     return () => window?.removeEventListener('scroll', handleScroll);
   }, [isMounted]);
 
+  // URL Params Handler
   useEffect(() => {
     const category = searchParams.get('category');
     const search = searchParams.get('search');
@@ -43,15 +61,41 @@ export default function ShopContent() {
     if (search) setSearchQuery(search);
   }, [searchParams]);
 
-  const filteredProducts = useMemo(() => {
-    return products.filter(product => {
-      const matchesCategory = !activeCategory || product.category === activeCategory;
-      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesColor = !activeColor || product.color === activeColor;
-      return matchesCategory && matchesSearch && matchesColor;
-    });
-  }, [activeCategory, searchQuery, activeColor]);
+  // Appwrite Data Fetching
+  useEffect(() => {
+    const fetchAppwriteData = async () => {
+      try {
+        setLoading(true);
+        const response = await databases.listDocuments(
+          appwriteConfig.databaseId,
+          appwriteConfig.productsCollectionId
+        );
+        console.log('✅ Appwrite Products:', response.documents);
+        const productsData = response.documents as unknown as Product[];
+        setProducts(productsData);
+      } catch (error) {
+        console.error('❌ Error fetching from Appwrite:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    fetchAppwriteData();
+  }, []);
+
+  // =============== MEMOIZED COMPUTATIONS ===============
+  const filteredProducts = useMemo(() => {
+    if (!products || products.length === 0) return [];
+
+    return products.filter(product => {
+      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesDescription = !activeColor || product.description?.toLowerCase().includes(activeColor.toLowerCase());
+      const matchesCategory = !activeCategory || product.description?.toLowerCase().includes(activeCategory.toLowerCase());
+      return matchesSearch && matchesDescription && matchesCategory;
+    });
+  }, [products, searchQuery, activeColor, activeCategory]);
+
+  // =============== EVENT HANDLERS ===============
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isMounted || typeof window === 'undefined') return;
@@ -78,8 +122,14 @@ export default function ShopContent() {
     window.history.back();
   };
 
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
+  // =============== RENDER METHODS ===============
   return (
     <div className="text-black p-3 sm:p-10 pt-40 sm:pt-52 flex flex-col justify-center items-center">
+      {/* Header Section with Logo and Back Button */}
       <div className="flex w-full justify-center relative mt-6 sm:mt-2">
         <motion.div
           whileHover={{ scale: 1.06 }}
@@ -106,8 +156,9 @@ export default function ShopContent() {
         />
       </div>
 
+      {/* Search and Filter Section */}
       <div className="w-full max-w-4xl mt-4 sm:mt-8 flex flex-col sm:flex-row justify-between items-center gap-3 px-2 sm:px-4 md:px-8">
-        {/* Search Bar */}
+        {/* Search Bar Component */}
         <div className="flex-1 w-full sm:max-w-[280px]">
           <div className="relative">
             <input
@@ -137,7 +188,7 @@ export default function ShopContent() {
           </div>
         </div>
 
-        {/* Filter Dropdown */}
+        {/* Filter Dropdown Component */}
         <div className="relative w-full sm:min-w-[100px] sm:w-auto">
           <select
             className="appearance-none w-full py-2 px-4 bg-[#f1f1f1] rounded-full text-sm
@@ -173,6 +224,7 @@ export default function ShopContent() {
         </div>
       </div>
 
+      {/* Categories Section */}
       <div className="w-full max-w-4xl mt-4 sm:mt-8 px-2 sm:px-4 md:px-8">
         <h3 className="text-sm sm:text-base font-semibold mb-2 sm:mb-4">Categories</h3>
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5 sm:gap-3">
@@ -195,6 +247,7 @@ export default function ShopContent() {
           ))}
         </div>
 
+        {/* Color Filters */}
         <div className="mt-3 sm:mt-6">
           <h3 className="text-xs sm:text-sm font-medium mb-2 sm:mb-3 text-gray-600">By Color</h3>
           <div className="flex flex-wrap gap-1 sm:gap-2">
@@ -227,6 +280,7 @@ export default function ShopContent() {
         </div>
       </div>
 
+      {/* No Results Message */}
       {filteredProducts.length === 0 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -243,14 +297,16 @@ export default function ShopContent() {
         </motion.div>
       )}
 
+      {/* Products Grid */}
       <div className="w-full max-w-7xl mt-8 sm:mt-12 px-2 sm:px-4 md:px-8">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-6 place-items-center">
           {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.$id} product={product} />
           ))}
         </div>
       </div>
 
+      {/* Scroll To Top Button */}
       {showScrollTop && (
         <motion.button
           initial={{ opacity: 0, scale: 0.5 }}
