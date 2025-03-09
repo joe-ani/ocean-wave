@@ -17,6 +17,7 @@ interface Product {
   price: string;
   description: string;
   imageUrls: string[];
+  category?: string; // Add category field
 }
 
 export default function ShopContent() {
@@ -87,10 +88,18 @@ export default function ShopContent() {
     if (!products || products.length === 0) return [];
 
     return products.filter(product => {
+      // Search filter
       const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesDescription = !activeColor || product.description?.toLowerCase().includes(activeColor.toLowerCase());
-      const matchesCategory = !activeCategory || product.description?.toLowerCase().includes(activeCategory.toLowerCase());
-      return matchesSearch && matchesDescription && matchesCategory;
+
+      // Color filter
+      const matchesColor = !activeColor || product.description?.toLowerCase().includes(activeColor.toLowerCase());
+
+      // Category filter - find the category name from CATEGORIES
+      const selectedCategory = CATEGORIES.find(cat => cat.id === activeCategory)?.name;
+      const matchesCategory = !activeCategory ||
+        (product.category && product.category.toLowerCase() === selectedCategory?.toLowerCase());
+
+      return matchesSearch && matchesColor && matchesCategory;
     });
   }, [products, searchQuery, activeColor, activeCategory]);
 

@@ -13,51 +13,64 @@ import { useSwipeable } from 'react-swipeable';
 import { COLORS } from '../../data/colors';
 import type { Variants } from 'framer-motion';
 import Image from 'next/image';
+import { CATEGORIES } from '@/src/data/categories'
 
-// Define the product schema
+
+// Schema for product form validation using Zod
 const productSchema = z.object({
     name: z.string().min(1, "Product name is required"),
     price: z.string().min(1, "Price is required"),
     description: z.string().min(1, "Description is required"),
 });
 
+// Type definition for Appwrite error responses
 type AppwriteError = {
     message: string;
     code: number;
 };
 
-// Update Product interface
+// Interface for product data structure
 interface Product {
-    $id: string;
-    name: string;
-    price: string;
-    description: string;
-    imageUrls: string[];
+    $id: string;          // Unique identifier from Appwrite
+    name: string;         // Product name
+    price: string;        // Product price
+    description: string;  // Product description
+    imageUrls: string[]; // Array of image URLs
 }
 
+// Interface for
 interface ProductFormData {
     name: string;
     price: string;
     description: string;
+    category?: string;
 }
 
 const AdminPage = () => {
+    // Router for navigation
     const router = useRouter();
-    const [isAuthorized, setIsAuthorized] = useState(false);
-    const [products, setProducts] = useState<Product[]>([]);
-    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-    const [showImageModal, setShowImageModal] = useState<string | null>(null);
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
-    const formRef = useRef<HTMLDivElement>(null);
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [showDeleteModal, setShowDeleteModal] = useState<string | null>(null);
 
-    const { register, handleSubmit, reset, formState: { errors } } = useForm<ProductFormData>({
+    // State management
+    const [isAuthorized, setIsAuthorized] = useState(false);        // Authorization status
+    const [products, setProducts] = useState<Product[]>([]);         // List of products
+    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);  // Selected image files
+    const [isLoading, setIsLoading] = useState(false);              // Loading state
+    const [editingProduct, setEditingProduct] = useState<Product | null>(null); // Currently editing product
+    const [showImageModal, setShowImageModal] = useState<string | null>(null);  // Image modal visibility
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');        // Sort order for products
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);             // Current image index in modal
+    const [showDeleteModal, setShowDeleteModal] = useState<string | null>(null); // Delete confirmation modal
+    const [selectedCategory, setSelectedCategory] = useState<string | null>(null); // Selected category
+
+    // Ref for form scrolling
+    const formRef = useRef<HTMLDivElement>(null);
+
+    // Form setup using react-hook-form with Zod validation
+    const { register, handleSubmit, reset, formState: { errors }, getValues } = useForm<ProductFormData>({
         resolver: zodResolver(productSchema)
     });
 
+    // Fetch products from Appwrite database
     const fetchProducts = useCallback(async () => {
         try {
             const response = await databases.listDocuments(
@@ -72,6 +85,7 @@ const AdminPage = () => {
         }
     }, [sortOrder]);
 
+    // Check authorization on component mount
     useEffect(() => {
         const checkAuth = async () => {
             const adminKey = localStorage.getItem('adminKey');
@@ -86,15 +100,30 @@ const AdminPage = () => {
         checkAuth();
     }, [router, fetchProducts]);
 
+    const clearForm = () => {
+        reset({
+            name: '',
+            price: '',
+            description: '',
+            category: ''
+        });
+        setSelectedFiles([]);
+        setSelectedCategory(null);
+        setEditingProduct(null);
+    };
+
+    // Handle form submission for creating/updating products
     const onSubmit = async (data: ProductFormData) => {
         try {
             setIsLoading(true);
             console.log('📝 Submitting product data:', data);
 
+            // Handle image uploads
             let imageUrls: string[] = [];
             if (selectedFiles.length > 0) {
                 try {
                     console.log('🖼️ Uploading images...');
+                    // Upload all selected images to Appwrite storage
                     const uploadPromises = selectedFiles.map(file =>
                         storage.createFile(
                             appwriteConfig.storageId,
@@ -104,6 +133,7 @@ const AdminPage = () => {
                     );
 
                     const uploadedFiles = await Promise.all(uploadPromises);
+                    // Generate URLs for uploaded images
                     imageUrls = uploadedFiles.map(file => {
                         if (file && file.$id) {
                             return `https://cloud.appwrite.io/v1/storage/buckets/${appwriteConfig.storageId}/files/${file.$id}/view?project=67b6273400341a9582d9`;
@@ -111,7 +141,7 @@ const AdminPage = () => {
                             console.error('❌ File upload error: missing file ID');
                             toast.error('Failed to upload images. Please try again.');
                             setIsLoading(false);
-                            return ""; // Return a default value or handle the error as needed
+                            return "";
                         }
                     });
                     console.log('✅ Images uploaded successfully');
@@ -124,6 +154,18 @@ const AdminPage = () => {
                 }
             }
 
+            // Update the productData object to correctly include the category
+            const productData = {
+                name: data.name,
+                price: data.price,
+                description: data.description,
+                // Get the category name instead of the ID
+                category: CATEGORIES.find(cat => cat.id === selectedCategory)?.name || '',
+                imageUrls: imageUrls.length > 0 ? imageUrls : (editingProduct?.imageUrls || []),
+            };
+
+            console.log('📦 Final product data being sent to Appwrite:', productData);
+
             if (editingProduct) {
                 try {
                     console.log('📝 Updating existing product...');
@@ -131,12 +173,7 @@ const AdminPage = () => {
                         appwriteConfig.databaseId,
                         appwriteConfig.productsCollectionId,
                         editingProduct.$id,
-                        {
-                            name: data.name,
-                            price: data.price,
-                            description: data.description,
-                            imageUrls: imageUrls.length > 0 ? imageUrls : editingProduct.imageUrls,
-                        }
+                        productData
                     );
                     console.log('✅ Product updated successfully');
                     toast.success('Product updated successfully');
@@ -154,15 +191,11 @@ const AdminPage = () => {
                         appwriteConfig.databaseId,
                         appwriteConfig.productsCollectionId,
                         ID.unique(),
-                        {
-                            name: data.name,
-                            price: data.price,
-                            description: data.description,
-                            imageUrls,
-                        }
+                        productData
                     );
                     console.log('✅ Product created successfully:', newProduct);
                     toast.success('Product created successfully');
+                    clearForm(); // Clear all fields after successful creation
                 } catch (createError: unknown) {
                     const appwriteError = createError as AppwriteError;
                     console.error('❌ Product creation error:', appwriteError);
@@ -172,6 +205,8 @@ const AdminPage = () => {
                 }
             }
 
+            // Reset form and state after successful submission
+            setSelectedCategory(null);
             reset();
             setSelectedFiles([]);
             setEditingProduct(null);
@@ -185,6 +220,7 @@ const AdminPage = () => {
         }
     };
 
+    // Handle product deletion
     const confirmDelete = async () => {
         if (showDeleteModal) {
             try {
@@ -194,12 +230,11 @@ const AdminPage = () => {
                     showDeleteModal
                 );
                 toast.success('Product deleted successfully');
-                fetchProducts();
+                setShowDeleteModal(null);
+                await fetchProducts();
             } catch (error) {
                 console.error('Error deleting product:', error);
                 toast.error('Failed to delete product');
-            } finally {
-                setShowDeleteModal(null);
             }
         }
     };
@@ -245,6 +280,13 @@ const AdminPage = () => {
     const handleColorClick = (colorName: string, event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
         reset({ description: colorName });
+    };
+
+    const handleCategorySelect = (categoryId: string) => {
+        setSelectedCategory(prevCategory => prevCategory === categoryId ? null : categoryId);
+        // Update the form data
+        const category = CATEGORIES.find(cat => cat.id === categoryId)?.name || '';
+        reset({ ...getValues(), description: getValues().description, category });
     };
 
     if (!isAuthorized) {
@@ -327,6 +369,31 @@ const AdminPage = () => {
                                     >
                                         {color.name}
                                     </motion.button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="mt-4 sm:mt-8">
+                            <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-2 sm:mb-4">Select Category</h3>
+                            <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5 sm:gap-3">
+                                {CATEGORIES.map((category) => (
+                                    <motion.div
+                                        key={category.id}
+                                        whileHover={{ scale: 1.03 }}
+                                        whileTap={{ scale: 0.97 }}
+                                        onClick={() => handleCategorySelect(category.id)}
+                                        className={`cursor-pointer p-2 sm:p-3 rounded-lg text-center transition-colors duration-200
+                                            ${selectedCategory === category.id
+                                                ? 'bg-black text-white'
+                                                : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
+                                            }
+                                        `}
+                                    >
+                                        <div className="text-lg sm:text-2xl mb-1">{category.icon}</div>
+                                        <div className="text-[10px] sm:text-sm font-medium">
+                                            {category.name}
+                                        </div>
+                                    </motion.div>
                                 ))}
                             </div>
                         </div>
