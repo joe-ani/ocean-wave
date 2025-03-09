@@ -7,14 +7,14 @@ import Review from "./Components/Review";
 import AboutFugo from "./Components/AboutFugo";
 import ContactForm from "./Components/ContactForm";
 import Footer from "./Components/Footer";
-import Nav from "./Components/Nav";
 import WhatsAppButton from "./Components/WhatsAppButton";
+// Removed Nav import since it's not being used
 
 const HomePage = () => {
   return (
-    <div className="overflow-x-hidden">
+    <>
       <Hero />
-      <div className="space-y-16 md:space-y-0">
+      <div className="space-y-16 md:space-y-16"> {/* Changed to maintain spacing on both mobile and desktop */}
         {/* section 1 */}
         <div id="section1" className="flex flex-col px-0 md:px-40 pt-16 md:pt-28 pb-0 md:pb-4 text-[#333333]">
           <h2 className="text-xs md:text-sm font-[500] px-5 md:px-0">HERE&apos;s</h2>
@@ -76,7 +76,7 @@ const HomePage = () => {
       </div>
       <WhatsAppButton />
       <Footer />
-    </div>
+    </>
   );
 }
 
