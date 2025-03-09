@@ -29,7 +29,7 @@ const ScrollZoomController = () => {
       map.scrollWheelZoom.disable();
       map.boxZoom.disable();
       map.keyboard.disable();
-      if ((map as any).tap) (map as any).tap.disable();
+      if (map.tap) map.tap.disable();
     }
 
     const handleScroll = () => {
@@ -59,10 +59,14 @@ const Map: React.FC<MapProps> = ({ height = '150px', className = '' }) => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const icon = L.icon({
-      iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
-      iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
-      shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    const icon = new L.Icon({
+      iconUrl: '/images/marker-icon.png',
+      iconRetinaUrl: '/images/marker-icon-2x.png',
+      shadowUrl: '/images/marker-shadow.png',
       iconSize: [25, 41],
       iconAnchor: [12, 41],
       popupAnchor: [1, -34],
@@ -70,12 +74,12 @@ const Map: React.FC<MapProps> = ({ height = '150px', className = '' }) => {
       shadowAnchor: [12, 41],
       className: 'marker-bounce'
     });
+    
     setMapIcon(icon);
+    handleResize();
 
-    // Check if mobile
-    if (typeof window !== 'undefined') {
-      setIsMobile(window.innerWidth < 768);
-    }
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   return (
@@ -96,6 +100,7 @@ const Map: React.FC<MapProps> = ({ height = '150px', className = '' }) => {
         doubleClickZoom={!isMobile}
         boxZoom={!isMobile}
         keyboard={!isMobile}
+        tap={!isMobile}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -116,4 +121,6 @@ const Map: React.FC<MapProps> = ({ height = '150px', className = '' }) => {
   );
 };
 
+
 export default Map;
+
