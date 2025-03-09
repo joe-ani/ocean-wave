@@ -21,6 +21,17 @@ const ScrollZoomController = () => {
   useEffect(() => {
     if (!isMounted || typeof window === 'undefined') return;
 
+    // Disable dragging on mobile
+    if (window.innerWidth < 768) {
+      map.dragging.disable();
+      map.touchZoom.disable();
+      map.doubleClickZoom.disable();
+      map.scrollWheelZoom.disable();
+      map.boxZoom.disable();
+      map.keyboard.disable();
+      if ((map as any).tap) (map as any).tap.disable();
+    }
+
     const handleScroll = () => {
       const mapElement = map.getContainer();
       const rect = mapElement.getBoundingClientRect();
@@ -45,6 +56,7 @@ const ScrollZoomController = () => {
 const Map: React.FC<MapProps> = ({ height = '150px', className = '' }) => {
   const targetLocation: [number, number] = [6.456559134970387, 3.3842979366622847];
   const [mapIcon, setMapIcon] = useState<L.Icon | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const icon = L.icon({
@@ -59,6 +71,11 @@ const Map: React.FC<MapProps> = ({ height = '150px', className = '' }) => {
       className: 'marker-bounce'
     });
     setMapIcon(icon);
+
+    // Check if mobile
+    if (typeof window !== 'undefined') {
+      setIsMobile(window.innerWidth < 768);
+    }
   }, []);
 
   return (
@@ -72,8 +89,13 @@ const Map: React.FC<MapProps> = ({ height = '150px', className = '' }) => {
           borderRadius: '15px',
           zIndex: 0,
         }}
-        zoomControl={true}
-        scrollWheelZoom={true}
+        zoomControl={!isMobile}
+        scrollWheelZoom={!isMobile}
+        dragging={!isMobile}
+        touchZoom={!isMobile}
+        doubleClickZoom={!isMobile}
+        boxZoom={!isMobile}
+        keyboard={!isMobile}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -83,32 +105,11 @@ const Map: React.FC<MapProps> = ({ height = '150px', className = '' }) => {
         <ScrollZoomController />
       </MapContainer>
       <style jsx global>{`
-        .leaflet-pane,
-        .leaflet-tile,
-        .leaflet-marker-icon,
-        .leaflet-marker-shadow,
-        .leaflet-tile-container,
-        .leaflet-map-pane svg,
-        .leaflet-map-pane canvas,
-        .leaflet-zoom-box,
-        .leaflet-image-layer,
-        .leaflet-layer {
-          z-index: 1 !important;
+        .leaflet-container {
+          cursor: ${isMobile ? 'default' : 'grab'} !important;
         }
-        .leaflet-overlay-pane {
-          z-index: 2 !important;
-        }
-        .leaflet-marker-pane {
-          z-index: 3 !important;
-        }
-        .leaflet-tooltip-pane {
-          z-index: 4 !important;
-        }
-        .leaflet-popup-pane {
-          z-index: 5 !important;
-        }
-        .leaflet-control {
-          z-index: 6 !important;
+        .leaflet-container:active {
+          cursor: ${isMobile ? 'default' : 'grabbing'} !important;
         }
       `}</style>
     </div>
