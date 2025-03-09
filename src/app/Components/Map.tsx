@@ -29,7 +29,10 @@ const ScrollZoomController = () => {
       map.scrollWheelZoom.disable();
       map.boxZoom.disable();
       map.keyboard.disable();
-      if (map.tap) map.tap.disable();
+      // Safely handle tap property
+      if ('tap' in map) {
+        (map as any).tap?.disable();
+      }
     }
 
     const handleScroll = () => {
@@ -74,7 +77,7 @@ const Map: React.FC<MapProps> = ({ height = '150px', className = '' }) => {
       shadowAnchor: [12, 41],
       className: 'marker-bounce'
     });
-    
+
     setMapIcon(icon);
     handleResize();
 
