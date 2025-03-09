@@ -10,8 +10,20 @@ interface MapProps {
   className?: string;
 }
 
+// Define a type for the Leaflet map with tap property
+interface ExtendedMap extends L.Map {
+  tap?: {
+    disable: () => void;
+  };
+}
+
+// Extend MapContainer props to include tap
+interface ExtendedMapContainerProps extends L.MapOptions {
+  tap?: boolean;
+}
+
 const ScrollZoomController = () => {
-  const map = useMap();
+  const map = useMap() as ExtendedMap;
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -29,18 +41,17 @@ const ScrollZoomController = () => {
       map.scrollWheelZoom.disable();
       map.boxZoom.disable();
       map.keyboard.disable();
-      // Safely handle tap property
-      if ('tap' in map) {
-        (map as any).tap?.disable();
+      if (map.tap) {
+        map.tap.disable();
       }
     }
 
     const handleScroll = () => {
       const mapElement = map.getContainer();
       const rect = mapElement.getBoundingClientRect();
-      const viewportCenter = (window?.innerHeight || 0) / 2;
+      const viewportCenter = window.innerHeight / 2;
       const elementCenter = rect.top + rect.height / 2;
-      const distanceFromCenter = Math.abs(elementCenter - viewportCenter) / (window?.innerHeight || 1);
+      const distanceFromCenter = Math.abs(elementCenter - viewportCenter) / window.innerHeight;
       const newZoom = 14 + ((1 - distanceFromCenter) * 4);
 
       map.setZoom(Math.min(Math.max(newZoom, 14), 18), {
@@ -103,7 +114,7 @@ const Map: React.FC<MapProps> = ({ height = '150px', className = '' }) => {
         doubleClickZoom={!isMobile}
         boxZoom={!isMobile}
         keyboard={!isMobile}
-        tap={!isMobile}
+        {...({ tap: !isMobile } as ExtendedMapContainerProps)} // Type assertion for tap property
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
