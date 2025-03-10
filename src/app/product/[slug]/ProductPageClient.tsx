@@ -183,7 +183,7 @@ export default function ProductPageClient({ params }: Props) {
 
                         {/* Thumbnail Gallery */}
                         {product.imageUrls.length > 1 && (
-                            <div className="mt-4 flex justify-center gap-2 overflow-x-auto px-2 pb-2">
+                            <div className="mt-4 flex justify-center gap-2 px-2 pb-2">
                                 {product.imageUrls.map((url, index) => (
                                     <motion.div
                                         key={index}
