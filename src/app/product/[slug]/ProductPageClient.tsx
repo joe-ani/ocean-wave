@@ -132,7 +132,7 @@ export default function ProductPageClient({ params }: Props) {
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6 sm:gap-8 mt-6 sm:mt-10">
-                    {/* Image Carousel Section */}
+                    {/* Main Image Carousel Section */}
                     <div className="relative w-full">
                         <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] rounded-[20px] sm:rounded-[30px] 
                         flex items-center justify-center bg-gradient-to-t border-2 border-[#A4A4A4] from-[#A4A4A4] to-white 
@@ -181,20 +181,37 @@ export default function ProductPageClient({ params }: Props) {
                                     {currentImageIndex + 1} / {product.imageUrls.length}
                                 </div>
                             )}
-
-                            {/* Like Button */}
-                            <motion.div
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.9 }}
-                                className="absolute top-3 sm:top-4 right-3 sm:right-4 p-2 cursor-pointer z-10"
-                                onClick={() => setIsLiked(!isLiked)}
-                            >
-                                <Heart
-                                    className={`w-6 h-6 sm:w-7 sm:h-7 stroke-[1.5] ${isLiked ? 'text-red-500' : 'text-gray-400'}`}
-                                    fill={isLiked ? "#ef4444" : "none"}
-                                />
-                            </motion.div>
                         </div>
+
+                        {/* Thumbnail Gallery */}
+                        {product.imageUrls.length > 1 && (
+                            <div className="mt-4 flex justify-center gap-2 overflow-x-auto px-2 pb-2">
+                                {product.imageUrls.map((url, index) => (
+                                    <motion.div
+                                        key={index}
+                                        onClick={() => setCurrentImageIndex(index)}
+                                        className={`relative cursor-pointer rounded-lg overflow-hidden
+                                            ${currentImageIndex === index 
+                                                ? 'ring-2 ring-yellow-500 ring-offset-2' 
+                                                : 'opacity-70 hover:opacity-100'
+                                            }`}
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        <div className="w-16 h-16 sm:w-20 sm:h-20">
+                                            <Image
+                                                src={url}
+                                                alt={`${product.name} thumbnail ${index + 1}`}
+                                                fill
+                                                className="object-cover"
+                                                sizes="(max-width: 768px) 64px, 80px"
+                                                unoptimized
+                                            />
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     {/* Product Details Section */}
