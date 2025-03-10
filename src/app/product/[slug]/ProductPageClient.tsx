@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { Heart, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react"; // Removed Heart import
 import Skeleton from '@/src/components/Skeleton';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
@@ -22,11 +22,9 @@ interface Props {
 }
 
 export default function ProductPageClient({ params }: Props) {
-    // Use params or remove the destructuring if not needed
     console.log('Product slug:', params.slug);
     const isClient = useClient();
     const router = useRouter();
-    const [isLiked, setIsLiked] = useState(false);
     const [product, setProduct] = useState<ProductType | null>(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
