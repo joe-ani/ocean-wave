@@ -1,3 +1,4 @@
+
 "use client"
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
@@ -20,52 +21,10 @@ const WhatsAppButton = () => {
             const encodedMessage = encodeURIComponent(message);
             const whatsappURL = `https://wa.me/2347016027618?text=${encodedMessage}`;
             window?.open(whatsappURL, "_blank");
+            setIsModalOpen(false); // Close modal after sending
+            setMessage(""); // Reset message
         } else {
             alert("Please enter a message.");
-        }
-    };
-
-    const handleClickOutside = (event: MouseEvent) => {
-        if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-            setIsModalOpen(false);
-        }
-    };
-
-    useEffect(() => {
-        if (isModalOpen) {
-            document.addEventListener("mousedown", handleClickOutside);
-        } else {
-            document.removeEventListener("mousedown", handleClickOutside);
-        }
-
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [isModalOpen]);
-
-    const modalVariants = {
-        hidden: {
-            opacity: 0,
-            scale: 0.75,
-            y: 20
-        },
-        visible: {
-            opacity: 1,
-            scale: 1,
-            y: 0,
-            transition: {
-                type: "spring",
-                duration: 0.5,
-                bounce: 0.3
-            }
-        },
-        exit: {
-            opacity: 0,
-            scale: 0.9,
-            y: 10,
-            transition: {
-                duration: 0.2
-            }
         }
     };
 
@@ -75,47 +34,87 @@ const WhatsAppButton = () => {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setIsModalOpen(true)}
-                className="bg-gradient-to-bl from-[#fee88e] to-[#CFAA3D] w-[60px] h-[60px] md:w-[70px] md:h-[70px] rounded-full fixed top-[80%] md:top-[70%] right-5 md:right-10 flex items-center justify-center shadow-lg cursor-pointer z-[9999]"
+                className="bg-gradient-to-bl from-[#fee88e] to-[#CFAA3D] w-[50px] h-[50px] 
+                    md:w-[60px] md:h-[60px] rounded-full fixed bottom-[20px] right-[20px] 
+                    flex items-center justify-center shadow-lg cursor-pointer z-[999]
+                    hover:shadow-xl transition-shadow duration-300"
+                style={{
+                    willChange: 'transform',
+                    transform: 'translate3d(0, 0, 0)',
+                }}
             >
-                <Image width={35} height={35} className="w-[42%] md:w-[60%]" src={"/icons/message.png"} alt={"message"} />
+                <Image 
+                    width={25} 
+                    height={25} 
+                    className="w-[60%] h-[60%] object-contain" 
+                    src={"/icons/message.png"} 
+                    alt={"WhatsApp message"} 
+                />
             </motion.div>
 
             <AnimatePresence>
                 {isModalOpen && (
                     <motion.div
-                        className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50"
+                        className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center 
+                            justify-center z-[1000] p-4"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
+                        onClick={() => setIsModalOpen(false)}
                     >
                         <motion.div
                             ref={modalRef}
-                            className="bg-white rounded-lg w-[90%] max-w-md p-4 sm:p-6 shadow-lg relative"
-                            variants={modalVariants}
+                            className="bg-white rounded-lg w-[90%] max-w-md p-4 sm:p-6 
+                                shadow-lg relative"
+                            variants={{
+                                hidden: { opacity: 0, scale: 0.8, y: 10 },
+                                visible: { 
+                                    opacity: 1, 
+                                    scale: 1, 
+                                    y: 0,
+                                    transition: {
+                                        type: 'spring',
+                                        stiffness: 300,
+                                        damping: 25
+                                    }
+                                },
+                                exit: {
+                                    opacity: 0,
+                                    scale: 0.8,
+                                    y: 10,
+                                    transition: { duration: 0.2 }
+                                }
+                            }}
                             initial="hidden"
                             animate="visible"
                             exit="exit"
+                            onClick={(e) => e.stopPropagation()}
                         >
                             <button
                                 onClick={() => setIsModalOpen(false)}
-                                className="absolute top-2 right-2 text-gray-600 hover:text-black text-sm"
+                                className="absolute top-2 right-2 text-gray-600 hover:text-black 
+                                    p-2 rounded-full hover:bg-gray-100 transition-colors"
                             >
                                 ✕
                             </button>
-                            <h2 className="text-base sm:text-xl font-[700] mb-3 sm:mb-4 text-center text-[#333333]">Send a WhatsApp Message</h2>
-                            <textarea
-                                className="text-[#333] text-sm w-full p-2 sm:p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#CFAA3D] resize-none"
-                                rows={4}
-                                placeholder="Type your message here..."
-                                value={message}
-                                onChange={(e) => setMessage(e.target.value)}
-                            />
-                            <button
-                                onClick={openWhatsApp}
-                                className="mt-3 sm:mt-4 w-full bg-gradient-to-bl from-[#fee88e] to-[#CFAA3D] text-white py-2 text-sm sm:text-base rounded-md shadow-md hover:scale-105 transition-transform"
-                            >
-                                Send on WhatsApp
-                            </button>
+                            <div className="mt-4">
+                                <textarea
+                                    value={message}
+                                    onChange={(e) => setMessage(e.target.value)}
+                                    placeholder="Type your message here..."
+                                    className="w-full h-32 p-3 border border-gray-300 rounded-lg 
+                                        focus:ring-2 focus:ring-yellow-500 focus:border-transparent
+                                        resize-none"
+                                />
+                                <button
+                                    onClick={openWhatsApp}
+                                    className="w-full mt-4 bg-gradient-to-r from-[#fee88e] to-[#CFAA3D]
+                                        text-black font-medium py-2 px-4 rounded-lg
+                                        hover:opacity-90 transition-opacity"
+                                >
+                                    Send Message
+                                </button>
+                            </div>
                         </motion.div>
                     </motion.div>
                 )}
