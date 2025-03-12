@@ -93,7 +93,7 @@ const OpeningHours = () => {
             {/* Image */}
             <div className="relative h-full w-full">
               <Image
-                className="object-cover scale-[1.4] md:scale-100 object-[80%_45%] md:object-center"
+                className="object-cover scale-[1] md:scale-100 object-[50%_45%] md:object-[-80%_center]"
                 fill
                 sizes="(max-width: 768px) 200px, 100vw"
                 src="/images/shop.png"
