@@ -87,7 +87,7 @@ const OpeningHours = () => {
         variants={sectionVariant}
       >
         {/* Image mask mobile */}
-        <div className="w-[200px] h-[150px] md:w-full md:h-[280px] bg-black rounded-[20px] overflow-hidden md:overscroll-none md:relative">
+        <div className="w-[200px] h-[180px] md:w-full md:h-[320px] bg-black rounded-[20px] overflow-hidden md:overscroll-none md:relative">
           {/* Image shop and map */}
           <div className="h-full w-full md:absolute md:w-full">
             {/* Image */}
@@ -104,9 +104,9 @@ const OpeningHours = () => {
               <div className="hidden md:block top-0 left-0 w-full h-full absolute rounded-[10px] md:rounded-[30px] bg-gradient-to-r from-black to-transparent"></div>
             </div>
             {/*Map */}
-            <div className="absolute flex flex-col top-[170px] md:top-[20%] left-0 md:left-[10%] space-y-2">
+            <div className="absolute flex flex-col top-[200px] md:top-[25%] left-0 md:left-[10%] space-y-2">
               <div className="relative w-[200px] md:w-[250px] border-2 border-[#333333] rounded-lg md:border-0">
-                <ClientMap height="170px" />
+                <ClientMap height="150px" />
               </div>
               <motion.button
                 whileHover={{ scale: 1.05 }}
