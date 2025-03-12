@@ -74,7 +74,7 @@ const HomePage = () => {
           <ContactForm />
         </div>
       </div>
-      {/* <WhatsAppButton /> */}
+      <WhatsAppButton />
       <Footer />
     </div>
   );
