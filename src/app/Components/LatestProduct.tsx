@@ -135,13 +135,17 @@ const LatestProduct: React.FC = () => {
             }}
           >
             <motion.div
-              className="latest-product-card w-[150px] h-[200px] sm:w-[200px] sm:h-[250px] flex flex-col items-center p-4 
-              bg-slate-200 relative rounded-[15px] sm:rounded-[25px] cursor-pointer transition-colors duration-200"
+              className="latest-product-card w-[150px] h-[200px] sm:w-[200px] sm:h-[250px] flex flex-col items-center 
+              relative rounded-[15px] sm:rounded-[25px] cursor-pointer transition-colors duration-200 overflow-hidden"
               initial="hidden"
               animate={containerInView ? "visible" : "hidden"}
               whileHover="hover"
               whileTap="tap"
               variants={cardVariants}
+              style={{
+                backfaceVisibility: "hidden",
+                WebkitFontSmoothing: "subpixel-antialiased"
+              }}
             >
               {/* Heart icon */}
               <div
@@ -161,34 +165,36 @@ const LatestProduct: React.FC = () => {
               </div>
 
               {/* Product Image */}
-              <div className="w-full h-[60%] relative flex items-center justify-center">
+              <div className="w-full h-full relative">
                 {product.imageUrls && product.imageUrls.length > 0 ? (
                   <Image
-                    className="object-contain w-full h-full"
-                    width={120}
-                    height={240}
+                    className="object-cover"
+                    fill
                     alt={product.name}
                     src={product.imageUrls[0]}
                     priority
                     unoptimized
+                    sizes="(max-width: 640px) 150px, 200px"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-gray-200">
                     <p className="text-gray-400">No Image</p>
                   </div>
                 )}
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
               </div>
 
               {/* Price Card */}
               <div className="price-card w-[90%] h-[70px] sm:h-[80px] rounded-[10px] sm:rounded-[15px] 
-              absolute bottom-3 bg-black/80 backdrop-blur-sm flex flex-col justify-center gap-1 sm:gap-2">
+              absolute bottom-3 bg-gradient-to-r from-black/80 to-black/40 backdrop-blur-[2px] 
+              flex flex-col justify-center gap-1 sm:gap-2">
                 <div className="px-2 sm:px-3 text-white font-semibold text-xs sm:text-sm truncate">
                   {product.name}
                 </div>
                 <div className="w-full h-[1px] bg-[#dddd]"></div>
                 <div className="flex items-center justify-between px-2 sm:px-3">
                   <p className="text-white font-medium text-xs">₦{product.price}</p>
-                  <TrendingUp className="text-green-400" size={16} />
                 </div>
               </div>
             </motion.div>

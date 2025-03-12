@@ -130,11 +130,12 @@ export default function ProductPageClient({ params }: Props) {
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6 sm:gap-8 mt-6 sm:mt-10">
-                    {/* Main Image Carousel Section */}
-                    <div className="relative w-full">
+                    {/* Main Image and Thumbnail Section - using flex for desktop */}
+                    <div className="relative w-full md:flex md:gap-4">
+                        {/* Main Image Container */}
                         <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] rounded-[20px] sm:rounded-[30px] 
                         flex items-center justify-center bg-gradient-to-t border-2 border-[#A4A4A4] from-[#A4A4A4] to-white 
-                        overflow-hidden">
+                        overflow-hidden md:flex-1">
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={currentImageIndex}
@@ -147,7 +148,7 @@ export default function ProductPageClient({ params }: Props) {
                                         src={product.imageUrls[currentImageIndex]}
                                         alt={`${product.name} ${currentImageIndex + 1}`}
                                         fill
-                                        className="object-contain p-4 sm:p-8"
+                                        className="object-cover w-full h-full"
                                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                         priority
                                         unoptimized
@@ -173,22 +174,23 @@ export default function ProductPageClient({ params }: Props) {
                                 </>
                             )}
 
-                            {/* Image Counter */}
+                            {/* Image Counter - only show on mobile */}
                             {product.imageUrls.length > 1 && (
-                                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+                                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm md:hidden">
                                     {currentImageIndex + 1} / {product.imageUrls.length}
                                 </div>
                             )}
                         </div>
 
-                        {/* Thumbnail Gallery */}
+                        {/* Thumbnail Gallery - vertical for desktop, horizontal for mobile */}
                         {product.imageUrls.length > 1 && (
-                            <div className="mt-4 flex justify-center gap-2 px-2 pb-2">
+                            <div className="mt-4 md:mt-0 md:w-20 flex md:flex-col gap-2 px-2 pb-2 md:p-0 
+                             md:max-h-[500px] justify-center md:justify-start">
                                 {product.imageUrls.map((url, index) => (
                                     <motion.div
                                         key={index}
                                         onClick={() => setCurrentImageIndex(index)}
-                                        className={`relative cursor-pointer rounded-lg overflow-hidden
+                                        className={`relative cursor-pointer rounded-lg overflow-hidden flex-shrink-0
                                             ${currentImageIndex === index 
                                                 ? 'ring-2 ring-yellow-500 ring-offset-2' 
                                                 : 'opacity-70 hover:opacity-100'

@@ -46,12 +46,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const handleProductClick = () => {
     try {
       const slug = product.name.toLowerCase().replace(/\s+/g, "-");
-      // Store complete product data including all images
       const productData = {
         name: product.name,
         price: product.price,
         description: product.description,
-        imageUrls: product.imageUrls // Pass the entire imageUrls array
+        imageUrls: product.imageUrls
       };
       localStorage.setItem("selectedProduct", JSON.stringify(productData));
       router.push(`/product/${slug}`);
@@ -64,8 +63,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     <motion.div
       ref={ref}
       onClick={handleProductClick}
-      className="latest-product-card w-[150px] h-[200px] sm:w-[200px] sm:h-[250px] flex flex-col items-center p-4 
-      bg-slate-200 relative rounded-[15px] sm:rounded-[25px] cursor-pointer transition-colors duration-200"
+      className="latest-product-card w-[150px] h-[200px] sm:w-[200px] sm:h-[250px] flex flex-col items-center 
+      relative rounded-[15px] sm:rounded-[25px] cursor-pointer transition-colors duration-200 overflow-hidden"
       initial="hidden"
       animate={inView ? "visible" : "hidden"}
       whileHover="hover"
@@ -76,6 +75,27 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         WebkitFontSmoothing: "subpixel-antialiased"
       }}
     >
+      {/* Product Image */}
+      <div className="w-full h-full relative">
+        {product.imageUrls && product.imageUrls.length > 0 ? (
+          <Image
+            className="object-cover"
+            fill
+            alt={product.name || "Product image"}
+            src={product.imageUrls[0]}
+            priority={true}
+            unoptimized
+            sizes="(max-width: 640px) 150px, 200px"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gray-200">
+            <p className="text-gray-400">No Image</p>
+          </div>
+        )}
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+      </div>
+
       {/* Heart icon */}
       <div
         onClick={(e) => {
@@ -93,28 +113,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         />
       </div>
 
-      {/* Product Image */}
-      <div className="w-full h-[60%] relative flex items-center justify-center">
-        {product.imageUrls && product.imageUrls.length > 0 ? (
-          <Image
-            className="object-contain w-full h-full"
-            width={120}
-            height={240}
-            alt={product.name || "Product image"}
-            src={product.imageUrls[0]} // Use first image from array
-            priority={true}
-            unoptimized // Add this to fix Image domain issues temporarily
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-200">
-            <p className="text-gray-400">No Image</p>
-          </div>
-        )}
-      </div>
-
       {/* Price Card */}
       <div className="price-card w-[90%] h-[70px] sm:h-[80px] rounded-[10px] sm:rounded-[15px] 
-      absolute bottom-3 bg-black/80 backdrop-blur-sm flex flex-col justify-center gap-1 sm:gap-2">
+      absolute bottom-3 bg-gradient-to-r from-black/80 to-black/40 backdrop-blur-[2px] 
+      flex flex-col justify-center gap-1 sm:gap-2">
         <div className="px-2 sm:px-3 text-white font-semibold text-xs sm:text-sm truncate">
           {product.name}
         </div>
