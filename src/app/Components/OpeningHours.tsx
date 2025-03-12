@@ -11,9 +11,13 @@ const OpeningHours = () => {
     threshold: 0.2,
   });
   const [isMounted, setIsMounted] = useState(false);
+  const [currentDay, setCurrentDay] = useState<string>("");
 
   useEffect(() => {
     setIsMounted(true);
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const today = days[new Date().getDay()];
+    setCurrentDay(today);
   }, []);
 
   useEffect(() => {
@@ -36,6 +40,19 @@ const OpeningHours = () => {
       y: 0,
       transition: { duration: 0.8, ease: "easeOut" },
     },
+  };
+
+  const blipVariant = {
+    initial: { opacity: 0.3, scale: 1 },
+    animate: {
+      opacity: [0.3, 1, 0.3],
+      scale: [1, 1.4, 1],
+      transition: {
+        duration: 2,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }
+    }
   };
 
   return (
@@ -67,13 +84,33 @@ const OpeningHours = () => {
         ].map((item) => (
           <div key={item.day} className="flex flex-row md:flex-col items-center space-y-2 md:space-y-4 space-x-4 md:space-x-0">
             {/* mobile dot */}
-            <div className="w-[10px] md:w-[15px] h-[10px] md:h-[15px] bg-[#D6B448] md:hidden rounded-full"></div>
+            <div className="w-[10px] h-[10px] md:hidden bg-[#D6B448] rounded-full flex items-center justify-center">
+              {currentDay === item.day && (
+                <motion.div
+                  variants={blipVariant}
+                  initial="initial"
+                  animate="animate"
+                  className="absolute w-[16px] h-[16px] bg-[#D6B448] rounded-full opacity-30"
+                />
+              )}
+            </div>
+
             <div>
               <div className="text-sm md:text-xl ">{item.day}</div>
               <div className={`text-[11px] md:text-[15px] ${item.isRed ? 'text-red-400' : ''}`}>{item.time}</div>
             </div>
+
             {/* desktop dot */}
-            <div className="w-[10px] md:w-[15px] h-[10px] md:h-[15px] bg-[#D6B448] hidden md:block rounded-full"></div>
+            <div className="w-[15px] h-[15px] hidden md:flex items-center justify-center bg-[#D6B448] rounded-full">
+              {currentDay === item.day && (
+                <motion.div
+                  variants={blipVariant}
+                  initial="initial"
+                  animate="animate"
+                  className="absolute w-[24px] h-[24px] bg-[#D6B448] rounded-full opacity-30"
+                />
+              )}
+            </div>
           </div>
         ))}
         {/*desktop line */}
