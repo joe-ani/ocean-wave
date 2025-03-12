@@ -12,7 +12,7 @@ import WhatsAppButton from "./Components/WhatsAppButton";
 
 const HomePage = () => {
   return (
-    <>
+    <div className="overflow-x-hidden">
       <Hero />
       <div className="space-y-16 md:space-y-16"> {/* Changed to maintain spacing on both mobile and desktop */}
         {/* section 1 */}
@@ -74,9 +74,9 @@ const HomePage = () => {
           <ContactForm />
         </div>
       </div>
-      <WhatsAppButton />
+      {/* <WhatsAppButton /> */}
       <Footer />
-    </>
+    </div>
   );
 }
 

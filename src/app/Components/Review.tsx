@@ -26,6 +26,13 @@ const Review = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, [isMounted]);
 
+    const getInitialX = (index: number, isMobile: boolean) => {
+        if (!isMobile) return index % 2 === 0 ? -30 : 30;
+
+        // For mobile: indexes 0,2 come from right, 1,3 come from left
+        return index % 2 === 0 ? 100 : -100;
+    };
+
     return (
         <div className="review grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-32 md:justify-items-end">
             {reviewData.map((review, index) => (
@@ -34,9 +41,7 @@ const Review = () => {
                     className={`flex items-center relative ${index % 2 === 0 ? 'pl-8 md:pr-0' : 'pr-8 md:pr-0'}`}
                     initial={{
                         opacity: 0,
-                        x: windowWidth < 768
-                            ? (index % 2 === 0 ? -100 : 100)
-                            : (index % 2 === 0 ? -30 : 30),
+                        x: getInitialX(index, windowWidth < 768),
                         y: windowWidth >= 768 ? 50 : 0
                     }}
                     whileInView={{
@@ -47,11 +52,11 @@ const Review = () => {
                     transition={{
                         duration: 0.8,
                         type: "spring",
-                        damping: 20,
-                        stiffness: 100,
-                        delay: index * 0.2
+                        damping: 25,
+                        stiffness: 120,
+                        delay: windowWidth < 768 ? index * 0.15 : index * 0.2
                     }}
-                    viewport={{ once: true }}
+                    viewport={{ once: true, margin: "-100px" }}
                 >
                     {/* Masked Image and Text Container */}
                     <div className={`flex items-center relative bg-[#b6b6b6] md:rounded-[30px] overflow-hidden w-full md:w-[430px] h-[150px] md:h-[230px] 
