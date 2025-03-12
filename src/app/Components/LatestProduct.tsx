@@ -5,7 +5,7 @@ import { motion, Variants } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import Link from "next/link";
 import { useActiveLink } from "../context/ActiveLinkContext";
-import { Heart, TrendingUp, ArrowRight } from "lucide-react";
+import { Heart, ArrowRight } from "lucide-react";
 import { databases, appwriteConfig } from '@/src/lib/appwrite';
 import { Query } from 'appwrite';
 
