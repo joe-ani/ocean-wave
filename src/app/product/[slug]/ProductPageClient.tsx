@@ -106,10 +106,10 @@ export default function ProductPageClient({ params }: Props) {
     }
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-white text-[#333333] p-4 pt-32 sm:pt-44">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-white text-[#333333] p-4 pt-20 sm:pt-28">
             <div className="w-full max-w-6xl">
-                {/* Header */}
-                <div className="flex items-center justify-between mb-6 mt-4 sm:mt-0">
+                {/* Header - Only Back Button */}
+                <div className="flex items-center mb-6 mt-4 sm:mt-0">
                     <motion.div
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
@@ -118,18 +118,9 @@ export default function ProductPageClient({ params }: Props) {
                     >
                         <ArrowLeft className="text-yellow-500 w-6 h-6 sm:w-8 sm:h-8" />
                     </motion.div>
-                    <Image
-                        width={300}
-                        height={100}
-                        src="/icons/luxury.png"
-                        alt="luxury"
-                        className="w-[180px] sm:w-[300px]"
-                        priority
-                    />
-                    <div className="w-6 sm:w-8"></div>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-6 sm:gap-8 mt-6 sm:mt-10">
+                <div className="grid md:grid-cols-2 gap-6 sm:gap-8 mt-6">
                     {/* Main Image and Thumbnail Section - using flex for desktop */}
                     <div className="relative w-full md:flex md:gap-4">
                         {/* Main Image Container */}

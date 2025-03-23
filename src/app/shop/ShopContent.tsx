@@ -1,9 +1,10 @@
 "use client"
 import { motion } from "framer-motion"
+import { ArrowLeft } from "lucide-react"
 import Image from "next/image"
 import { useState, useMemo, useEffect } from "react"
 import { ProductCard } from "@/src/components/ProductCard"
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { CATEGORIES } from '@/src/data/categories'
 import { COLORS } from '@/src/data/colors'
 import { databases, appwriteConfig } from '@/src/lib/appwrite'
@@ -22,6 +23,7 @@ interface Product {
 
 export default function ShopContent() {
   // =============== STATE MANAGEMENT ===============
+  const router = useRouter();
   const searchParams = useSearchParams();
   const initialSearchQuery = searchParams.get('search') || "";
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
@@ -127,7 +129,7 @@ export default function ShopContent() {
 
   const handleBack = () => {
     if (!isMounted || typeof window === 'undefined') return;
-    window.history.back();
+    router.back();
   };
 
   if (loading) {
@@ -136,32 +138,17 @@ export default function ShopContent() {
 
   // =============== RENDER METHODS ===============
   return (
-    <div className="text-black p-3 sm:p-10 pt-40 sm:pt-52 flex flex-col justify-center items-center">
-      {/* Header Section with Logo and Back Button */}
-      <div className="flex w-full justify-center relative mt-6 sm:mt-2">
+    <div className="text-black p-3 sm:p-10 pt-20 sm:pt-28 flex flex-col justify-center items-center">
+      {/* Back Button matching ProductPageClient styling */}
+      <div className="flex w-full justify-start mb-6 mt-4 sm:mt-0">
         <motion.div
-          whileHover={{ scale: 1.06 }}
+          whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          className="fixed top-32 sm:top-40 left-4 sm:left-6 cursor-pointer bg-white/10 backdrop-blur-sm 
-          w-[35px] h-[35px] sm:w-[40px] sm:h-[40px] rounded-full flex items-center justify-center 
-          hover:bg-white/20 z-50"
-          onClick={handleBack}
+          className="cursor-pointer p-2"
+          onClick={() => router.back()}
         >
-          <Image
-            width={24}
-            height={24}
-            src={"/icons/arrowback.png"}
-            alt={"back"}
-            className="w-5 h-5 sm:w-6 sm:h-6"
-          />
+          <ArrowLeft className="text-yellow-500 w-6 h-6 sm:w-8 sm:h-8" />
         </motion.div>
-        <Image
-          width={300}
-          height={100}
-          src={"/icons/luxury.png"}
-          alt={"luxury"}
-          className="w-[200px] sm:w-[300px]"
-        />
       </div>
 
       {/* Search and Filter Section */}

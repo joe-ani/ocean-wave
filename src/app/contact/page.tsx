@@ -6,8 +6,6 @@ import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 import ClientMap from '../Components/ClientMap'
 
-// Remove the dynamic import since we're using ClientMap
-
 export default function ContactPage() {
   const router = useRouter();
   const targetLocation = { lat: 6.456559134970387, lng: 3.3842979366622847 };
@@ -25,31 +23,22 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center bg-white text-[#333333] p-4 pt-32 sm:pt-44">
+    <div className="min-h-screen flex flex-col items-center bg-white text-[#333333] p-4 pt-20 sm:pt-28">
       <div className="w-full max-w-6xl">
-        <div className="flex items-center justify-between mb-6 mt-4 sm:mt-0">
+        {/* Simplified Header with only back button */}
+        <div className="flex items-center mb-6 mt-4 sm:mt-0">
           <motion.div
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             className="cursor-pointer p-2"
+            onClick={() => router.back()}
           >
-            <ArrowLeft
-              className="text-yellow-500 w-6 h-6 sm:w-8 sm:h-8"
-              onClick={() => router.back()}
-            />
+            <ArrowLeft className="text-yellow-500 w-6 h-6 sm:w-8 sm:h-8" />
           </motion.div>
-          <Image
-            width={300}
-            height={100}
-            src={"/icons/luxury.png"}
-            alt={"luxury"}
-            className="w-[180px] sm:w-[300px]"
-          />
-          <div className="w-6 sm:w-8"></div>
         </div>
 
         {/* Main Content Container */}
-        <div className="flex flex-col lg:flex-row gap-8 mt-6 sm:mt-10">
+        <div className="flex flex-col lg:flex-row gap-8 mt-6">
           {/* Left Side - Text Content */}
           <div className="flex-1">
             <motion.div
