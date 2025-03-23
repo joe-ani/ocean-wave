@@ -67,10 +67,10 @@ const BestSellers = () => {
                     {/* Content section */}
                     <motion.div
                         variants={itemVariants}
-                        className="flex flex-col justify-center space-y-4 w-full md:w-auto px-2">
+                        className="flex flex-col justify-center space-y-4 w-full md:w-auto px-10 md:px-2">
                         <div className="flex items-start flex-col space-y-2.5">
                             <div className="text-2xl sm:text-2xl md:text-3xl font-semibold tracking-tight">Spa Chair</div>
-                            <div className="w-16 sm:w-30 md:w-[150px] h-[1.5px] bg-gradient-to-r from-[#9d9d9d] to-transparent" />
+                            <div className="w-28 sm:w-30 md:w-[150px] h-[1.5px] bg-gradient-to-r from-[#9d9d9d] to-transparent" />
                             <div className="w-full max-w-[280px] sm:w-80 md:w-70 text-sm sm:text-sm md:text-base text-gray-600/90 leading-relaxed">
                                 This is a description text for the Spa Chair. It highlights the key features and benefits of this luxurious and comfortable seating option.
                             </div>
