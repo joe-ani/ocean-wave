@@ -11,8 +11,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "D'Fufo Hair",
-  description: "Luxury or Nothing",
+  title: "Ocean Wave",
+  description: "Ocean Wave beauty hub",
 };
 
 export default function RootLayout({

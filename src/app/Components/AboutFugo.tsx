@@ -17,20 +17,20 @@ const AboutFugo = () => {
             >
                 <Image
                     className="w-full h-full object-cover"
-                    width={2000}
-                    height={600}
-                    src={"/images/fugopic.png"}
+                    width={100}
+                    height={100}
+                    src={"/images/mrmonday.png"}
                     alt={""}
                 />
                 <div className="absolute w-full h-full bg-gradient-to-b from-black top-0"></div>
                 <motion.div
-                    className="flex flex-col z-10 absolute top-8 text-white p-8 sm:p-16 space-y-6 sm:space-y-8"
+                    className="flex flex-col z-10 absolute top-0 text-white p-8 sm:p-16 space-y-6 sm:space-y-5"
                     initial={{ y: 50, opacity: 0 }}
                     whileInView={{ y: 0, opacity: 1 }}
                     transition={{ duration: 0.6, delay: 0.3 }}
                     viewport={{ once: true }}
                 >
-                    <h1 className="text-2xl sm:text-4xl font-medium tracking-wide">Ali Ugochicku.</h1>
+                    <h1 className="text-2xl sm:text-4xl font-medium tracking-wide">Mr Monday.</h1>
                     <div className="relative">
                         <div
                             className={`relative overflow-hidden transition-all duration-500 ease-in-out

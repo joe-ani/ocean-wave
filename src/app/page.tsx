@@ -8,6 +8,7 @@ import AboutFugo from "./Components/AboutFugo";
 import ContactForm from "./Components/ContactForm";
 import Footer from "./Components/Footer";
 import WhatsAppButton from "./Components/WhatsAppButton";
+import BestSellers from "./Components/BestSellers";
 // Removed Nav import since it's not being used
 
 const HomePage = () => {
@@ -25,7 +26,16 @@ const HomePage = () => {
           </div>
         </div>
         {/* section 2 */}
-        <div id="section3" className="flex flex-col font-[600] px-0 md:px-40 py-0 md:py-2 text-[#333333]">
+        <div id="section3" className="flex flex-col font-[600] px-0 md:px-0 py-0 md:py-2 text-[#333333]">
+          <h2 className="text-xs md:text-sm font-medium px-5 md:px-40">check out</h2>
+          <h1 className="text-2xl md:text-4xl py-2 px-5 md:px-40">Our Best Seller.</h1>
+          {/* card component*/}
+          <div className=" py-8 md:py-20 flex justify-center">
+            <BestSellers />
+          </div>
+        </div>
+        {/* section 2 */}
+        <div id="section3" className="flex flex-col font-[600] px-0 md:px-40 py-0 md:py-20 text-[#333333]">
           <h2 className="text-xs md:text-sm font-medium px-5 md:px-0">Opening hours</h2>
           <h1 className="text-2xl md:text-4xl py-2 px-5 md:px-0">Our Opening Hours.</h1>
           {/* card component*/}

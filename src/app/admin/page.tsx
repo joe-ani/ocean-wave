@@ -136,7 +136,11 @@ const AdminPage = () => {
                     // Generate URLs for uploaded images
                     imageUrls = uploadedFiles.map(file => {
                         if (file && file.$id) {
-                            return `https://cloud.appwrite.io/v1/storage/buckets/${appwriteConfig.storageId}/files/${file.$id}/view?project=67b6273400341a9582d9`;
+                            // Use the getFileView method instead of constructing URL manually
+                            return storage.getFileView(
+                                appwriteConfig.storageId,
+                                file.$id
+                            ).toString();
                         } else {
                             console.error('❌ File upload error: missing file ID');
                             toast.error('Failed to upload images. Please try again.');
@@ -339,7 +343,7 @@ const AdminPage = () => {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">Colour</label>
                             <textarea
                                 {...register('description')}
                                 className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border border-gray-300 focus:ring-1 focus:ring-gray-400 focus:border-gray-400 transition-all duration-200 text-gray-900 font-normal placeholder-gray-500 min-h-[120px]"
@@ -374,7 +378,7 @@ const AdminPage = () => {
                         </div>
 
                         <div className="mt-4 sm:mt-8">
-                            <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-2 sm:mb-4">Select Category</h3>
+                            <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-2 sm:mb-4">Category</h3>
                             <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5 sm:gap-3">
                                 {CATEGORIES.map((category) => (
                                     <motion.div

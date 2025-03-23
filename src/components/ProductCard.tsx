@@ -84,7 +84,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             alt={product.name || "Product image"}
             src={product.imageUrls[0]}
             priority={true}
-            unoptimized
+            loader={({ src }) => src}
+            unoptimized={true}
             sizes="(max-width: 640px) 150px, 200px"
           />
         ) : (

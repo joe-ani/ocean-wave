@@ -150,13 +150,13 @@ const Nav = () => {
         />
       )}
 
-      <nav className={`fixed top-0 w-full z-[100] bg-[#111111] text-white p-4 sm:p-6 transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"}`}>
+      <nav className={`fixed top-0 w-full z-[100] bg-[#111111] text-white p-6 sm:p-8 transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"}`}>
         <div className="container mx-auto relative">
           {/* Main nav content */}
           <div className="flex justify-between items-center relative z-[110]">
             {/* Logo - adjusted size */}
             <Link href={"/"}>
-              <Image src="/logo.png" alt="Logo" width={100} height={50} />
+              <Image src="/logo.png" alt="Logo" width={80} height={50} />
             </Link>
 
             <div className="flex items-center space-x-8">

@@ -15,7 +15,8 @@ const ContactForm = () => {
     };
 
     return (
-        <div className="flex flex-col md:flex-row justify-around relative bg-gradient-to-b from-[#ededed] to-transparent p-4 md:p-10">
+        // Add new styling
+        <div className="flex flex-col md:flex-row justify-around relative bg-gradient-to-b from-[#ededed] to-transparent p-4 rounded-[20] md:rounded-[50px] m-4 md:m-11 md:p-10">
             {/* WhatsApp Section */}
             <motion.div
                 className="flex flex-col p-4 md:p-20 space-y-4 md:space-y-14"

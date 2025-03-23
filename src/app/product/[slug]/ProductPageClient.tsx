@@ -149,9 +149,9 @@ export default function ProductPageClient({ params }: Props) {
                                         alt={`${product.name} ${currentImageIndex + 1}`}
                                         fill
                                         className="object-cover w-full h-full"
-                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                        priority
-                                        unoptimized
+                                        loader={({ src }) => src}
+                                        unoptimized={true}
+                                        sizes="(max-width: 768px) 100vw, 50vw"
                                     />
                                 </motion.div>
                             </AnimatePresence>

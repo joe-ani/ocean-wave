@@ -133,7 +133,7 @@ const OpeningHours = () => {
                 className="object-cover scale-[1] md:scale-100 object-[50%_45%] md:object-[-80%_center]"
                 fill
                 sizes="(max-width: 768px) 200px, 100vw"
-                src="/images/shop.png"
+                src="/images/oceanshop.png"
                 alt="fugo shop"
                 priority
               />
@@ -164,6 +164,7 @@ const OpeningHours = () => {
           </div>
         </div>
       </motion.div>
+
     </motion.div>
   );
 };

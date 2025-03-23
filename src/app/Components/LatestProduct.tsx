@@ -29,6 +29,12 @@ const LatestProduct: React.FC = () => {
     threshold: 0.1
   });
 
+  useEffect(() => {
+  
+      console.log(products.map((product) => product.imageUrls));
+ 
+  }, [products])
+
   // Fetch latest products from Appwrite
   useEffect(() => {
     const fetchLatestProducts = async () => {

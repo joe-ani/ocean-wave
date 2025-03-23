@@ -215,7 +215,7 @@ const Hero = () => {
     };
 
     return (
-        <div className="hero bg-[#111111] h-screen flex flex-col justify-center items-center">
+        <div className="hero bg-[#111111] h-screen w-screen flex flex-col justify-center items-center">
             {/* Updated Overlay with blur effect */}
             {menuOpen && (
                 <motion.div
@@ -228,13 +228,20 @@ const Hero = () => {
                 />
             )}
 
-            <div className="cont1 w-full flex flex-col md:flex-row justify-around items-center px-8 md:px-20 lg:px-40 pb-8 pt-0 md:pt-20">
+            <div className="container mx-auto max-w-[1536px] flex flex-col md:flex-row justify-around items-center px-8 md:px-20 lg:px-40 pb-8 pt-0 md:pt-20">
                 <div className="logo md:mb-0 flex justify-between w-full md:w-auto items-center relative z-50">
-                    <Image className="w-32 h-auto md:w-52" width={200} height={100} alt="Dfugo logo" src="/logo.png" />
+                    <Image
+                        className="w-16 h-auto md:w-32"
+                        width={128}
+                        height={128}
+                        priority
+                        alt="Dfugo logo"
+                        src="/logo.png"
+                    />
 
                     {/* Nav-style Hamburger Button */}
                     <button
-                        className="text-white md:hidden focus:outline-none z-50"
+                        className="text-white md:hidden focus:outline-none z-50 p-2"
                         onClick={() => setMenuOpen(!menuOpen)}
                     >
                         <svg
@@ -387,11 +394,11 @@ const Hero = () => {
                 </div>
             </div>
 
-            {/* Main Content Section - Reverted to original styling */}
+            {/* Main Content Section - Original styling */}
             <div className="cont2 w-full flex flex-col-reverse md:flex-row justify-around items-center px-8 md:px-20 lg:px-40 pb-10 mb-11 pt-28 mb:pt-0">
                 {/* Hero Text Section - Original styling */}
                 <div className="hero-text text-left pt-28 md:pt-0">
-                    <p className="py-3 font-normal text-sm md:text-base">D&apos;Fugo Hair</p>
+                    <p className="py-3 font-normal text-sm md:text-base">Ocean Wave beauty hub</p>
 
                     <div className="w-[60%] h-[1px] bg-gradient-to-r from-[#FEEF88] to-transparent rounded-full mx-0"></div>
                     <motion.div
@@ -399,18 +406,22 @@ const Hero = () => {
                         initial="hidden"
                         animate="visible"
                         className="text-3xl md:text-5xl font-extrabold py-5">
-                        <p className="text-[#FEEF88]">Luxury</p> Or Nothing.
+                        {/* imlement modern text by text animation using framer */}
+                        <p>where innovation</p>
+                        <div className="flex gap-2">
+                            <span className="bg-gradient-to-r from-[#CBA335] to-[#FEEF88] bg-clip-text text-transparent">meets Beauty.</span>
+                        </div>
                     </motion.div>
                     <div className="w-[60%] h-[1px] bg-gradient-to-r from-[#FEEF88] to-transparent rounded-full mx-0"></div>
                     <p className="pt-8 text-[14px] md:text-[20px] w-[80%] mx-0 font-normal">
-                        &quot;We offer all types of premium and high-quality wigs.&quot;
+                        &quot;we offer all types of high quality salon, spa, and beauty equipments.&quot;
                     </p>
                     <div ref={actionsRef} className="quickact flex space-x-5 md:flex-row space-y-3 md:space-y-0 md:space-x-3 py-4 items-start md:items-center">
                         <Link href={"/shop"} onClick={() => setActiveLink("Shop")}>
                             <motion.button
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
-                                className="font-medium bg-gradient-to-tr from-[#fee88e] to-[#CFAA3D] text-[#111] text-[14px] md:text-[20px] rounded-full p-2 px-8 flex items-center">
+                                className="font-medium bg-gradient-to-tr from-[#fee88e] to-[#CBA335] text-[#111] text-[14px] md:text-[20px] rounded-full p-2 px-8 flex items-center">
                                 Shop
                                 <Image width={20} height={20} alt="arrow down" src="/icons/arrow.png" />
                             </motion.button>
@@ -421,7 +432,7 @@ const Hero = () => {
                             className="flex flex-col relative cursor-pointer"
                             onClick={() => scrollToSection('section3')}>
                             <div className="font-medium text-sm md:text-base">Locate Us</div>
-                            <div className="bg-[#cccccc5a] h-[2px] w-full rounded-full"></div>
+                            <div className="bg-gradient-to-r from-transparent via-[#cccccc5a] to-transparent h-[2px] w-full rounded-full"></div>
                         </motion.div>
                     </div>
                 </div>
@@ -435,7 +446,7 @@ const Hero = () => {
                     {/* Model */}
                     <motion.div variants={modelImageVariants} className="absolute w-52 md:w-auto">
                         {/* Fixed background circle */}
-                        <div className="bg-[#FEEF88] rounded-full w-full h-full absolute top-0"></div>
+                        <div className="bg-gradient-to-b from-[#FEEF88] to-transparent rounded-full w-full h-full absolute top-0"></div>
 
                         {/* Animated model image */}
                         {/* problem: Two images on top of each other during entrance and exit causing the styling to stretch the bg circle and offset the current image ot of position */}
