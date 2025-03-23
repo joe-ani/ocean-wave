@@ -1,10 +1,8 @@
 "use client";
-import React from 'react';
-import Image from 'next/image';
-import { Link } from 'lucide-react';
-import { motion, Variants } from "framer-motion";
-import { useActiveLink } from "../context/ActiveLinkContext";
-import { Heart, ArrowRight } from "lucide-react";
+import React from "react";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -31,7 +29,6 @@ const itemVariants = {
 };
 
 const BestSellers = () => {
-    const { setActiveLink } = useActiveLink();
     return (
         <motion.div
             className="relative w-full overflow-hidden"
