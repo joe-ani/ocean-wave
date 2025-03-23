@@ -1,12 +1,12 @@
-"use client"
-import { motion } from "framer-motion"
-import { ArrowLeft } from "lucide-react"
-import { useState, useMemo, useEffect } from "react"
-import { ProductCard } from "@/src/components/ProductCard"
-import { useRouter, useSearchParams } from 'next/navigation'
-import { CATEGORIES } from '@/src/data/categories'
-import { COLORS } from '@/src/data/colors'
-import { databases, appwriteConfig } from '@/src/lib/appwrite';
+"use client";
+import { motion } from "framer-motion";
+import { ArrowLeft } from "lucide-react";
+import { useState, useMemo, useEffect } from "react";
+import { ProductCard } from "@/src/components/ProductCard";
+import { useRouter, useSearchParams } from "next/navigation";
+import { CATEGORIES } from "@/src/data/categories";
+import { COLORS } from "@/src/data/colors";
+import { databases, appwriteConfig } from "@/src/lib/appwrite";
 
 // Remove products import since we're using Appwrite data
 // import { products } from "@/src/data/products"
@@ -126,10 +126,10 @@ export default function ShopContent() {
     });
   };
 
-  const handleBack = () => {
-    if (!isMounted || typeof window === 'undefined') return;
-    router.back();
-  };
+  // const handleBack = () => {
+  //   if (!isMounted || typeof window === 'undefined') return;
+  //   router.back();
+  // };
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
