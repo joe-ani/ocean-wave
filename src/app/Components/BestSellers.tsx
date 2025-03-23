@@ -70,8 +70,8 @@ const BestSellers = () => {
                         className="flex flex-col justify-center space-y-4 w-full md:w-auto px-2">
                         <div className="flex items-start flex-col space-y-2.5">
                             <div className="text-2xl sm:text-2xl md:text-3xl font-semibold tracking-tight">Spa Chair</div>
-                            <div className="w-16 sm:w-20 md:w-[150px] h-[1px] bg-gradient-to-r from-[#CFAA3D] via-[#CFAA3D] to-transparent" />
-                            <div className="w-full max-w-[260px] sm:w-80 md:w-60 text-sm sm:text-sm md:text-base text-gray-600/90 leading-relaxed">
+                            <div className="w-16 sm:w-30 md:w-[150px] h-[1.5px] bg-gradient-to-r from-[#9d9d9d] to-transparent" />
+                            <div className="w-full max-w-[280px] sm:w-80 md:w-70 text-sm sm:text-sm md:text-base text-gray-600/90 leading-relaxed">
                                 This is a description text for the Spa Chair. It highlights the key features and benefits of this luxurious and comfortable seating option.
                             </div>
                         </div>
@@ -81,7 +81,7 @@ const BestSellers = () => {
                             whileTap={{ scale: 0.95 }}
                             className="font-medium bg-gradient-to-tr from-[#fee88e] to-[#CFAA3D] text-[#111] 
                                      text-sm tracking-wide rounded-full py-2.5 px-5 
-                                     flex items-center w-44 sm:w-40 md:w-44 gap-2 mt-2">
+                                     flex items-center w-44 sm:w-40 md:w-44 gap-2">
                             Discover More
                             <ArrowRight size={16} strokeWidth={2.5} />
                         </motion.button>
@@ -90,6 +90,6 @@ const BestSellers = () => {
             </div>
         </motion.div>
     );
-}
+};
 
 export default BestSellers;
