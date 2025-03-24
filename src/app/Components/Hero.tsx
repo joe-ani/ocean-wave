@@ -395,7 +395,7 @@ const Hero = () => {
             {/* Main Content Section - Original styling */}
             <div className="cont2 w-full flex flex-col-reverse md:flex-row justify-around items-center px-8 md:px-20 lg:px-40 pb-10 mb-11 pt-28 mb:pt-0">
                 {/* Hero Text Section - Original styling */}
-                <div className="hero-text text-left pt-44 md:pt-0">
+                <div className="hero-text text-left pt-40 md:pt-0">
                     <p className="py-3 font-normal text-sm md:text-base">Ocean Wave beauty hub</p>
 
                     <div className="w-[60%] h-[1px] bg-gradient-to-r from-[#FEEF88] to-transparent rounded-full mx-0"></div>
