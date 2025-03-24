@@ -21,10 +21,8 @@ const Hero = () => {
 
     // Array of model images
     const modelImages = [
-        "/model.png",
-        "/model1.png",
-        "/model2.png",
-        "/model4.png",
+        "hero-graphis/hero1.png",
+        "hero-graphis/facemask model5.png",
         // Add more model image paths as needed
     ];
 
@@ -397,7 +395,7 @@ const Hero = () => {
             {/* Main Content Section - Original styling */}
             <div className="cont2 w-full flex flex-col-reverse md:flex-row justify-around items-center px-8 md:px-20 lg:px-40 pb-10 mb-11 pt-28 mb:pt-0">
                 {/* Hero Text Section - Original styling */}
-                <div className="hero-text text-left pt-28 md:pt-0">
+                <div className="hero-text text-left pt-48 md:pt-0">
                     <p className="py-3 font-normal text-sm md:text-base">Ocean Wave beauty hub</p>
 
                     <div className="w-[60%] h-[1px] bg-gradient-to-r from-[#FEEF88] to-transparent rounded-full mx-0"></div>
@@ -417,15 +415,15 @@ const Hero = () => {
                         &quot;we offer all types of high quality salon, spa, and beauty equipments.&quot;
                     </p>
                     <div ref={actionsRef} className="quickact flex space-x-5 md:flex-row space-y-3 md:space-y-0 md:space-x-3 py-4 items-start md:items-center">
-                        <Link href={"/shop"} onClick={() => setActiveLink("Shop")}>                  
+                        <Link href={"/shop"} onClick={() => setActiveLink("Shop")}>
                             <motion.button
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
                                 className="font-medium bg-gradient-to-tr from-[#fee88e] to-[#CBA335] text-[#111] text-[14px] md:text-[20px] rounded-full p-2 px-8 flex items-center">
                                 Shop
                                 <Image width={20} height={20} alt="arrow down" src="/icons/arrow.png" />
-                            </motion.button>              
-                        </Link>             
+                            </motion.button>
+                        </Link>
                         <motion.div
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
@@ -446,7 +444,7 @@ const Hero = () => {
                     {/* Model */}
                     <motion.div variants={modelImageVariants} className="absolute w-52 md:w-auto">
                         {/* Fixed background circle */}
-                        <div className="bg-gradient-to-b from-[#FEEF88] to-transparent rounded-full w-full h-full absolute top-0"></div>
+                        {/* <div className="bg-gradient-to-b from-[#FEEF88] to-transparent rounded-full w-full h-full absolute top-0"></div> */}
 
                         {/* Animated model image */}
                         {/* problem: Two images on top of each other during entrance and exit causing the styling to stretch the bg circle and offset the current image ot of position */}
@@ -475,9 +473,9 @@ const Hero = () => {
                     {/* Highlight container */}
                     <motion.div
                         variants={cardVariants}
-                        className="w-[170px] md:w-[200px] highlight-box border-[1.5px] border-[#feef88] rounded-[16px] p-[14px] md:p-[20px] md:rounded-[30px] z-10 space-y-2 md:space-y-4 absolute flex flex-col top-[-120px] md:top-[0px]">
+                        className="w-[170px] md:w-[200px] highlight-box border-[1.5px] border-[#feef88] rounded-[20px] p-[14px] md:p-[20px] md:rounded-[30px] z-10 space-y-2 md:space-y-4 absolute flex flex-col top-[-120px] md:top-[0px]">
                         <div className="flex justify-between items-center relative">
-                            <div className="bg-[#fee88e] text-[8px] md:text-[14px] text-black font-semibold rounded-full p-1 px-3 md:px-5">Featured</div>
+                            <div className="bg-[#d1d1d171] text-[8px] md:text-[14px] text-white font-semibold rounded-full p-1 px-3 md:px-5">Featured</div>
                             <motion.div
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
@@ -485,12 +483,12 @@ const Hero = () => {
                                 <Image className="absolute w-3 md:w-4" width={16} height={16} src={"/icons/arrowwhite.png"} alt="" />
                             </motion.div>
                         </div>
-                        <div className="flex flex-col space-y-1.5 md:space-y-3">
-                            <h1 className="text-[8px] md:text[16px]">Our best sellers</h1>
-                            <div className="w-[100%] h-[1px] bg-[#ccc] rounded-full"></div>
-                        </div>
-                        <div className="flex bg-[#cccccc39] p-[6px] md:p-[10px] rounded-[8px]">
-                            {/* <Image width={24} height={16} src={"/images/wig1.png"} alt="" className="w-4 md:w-6" /> */}
+                        <div className="flex justify-between space-y-1.5 md:space-y-3">
+                            <h1 className="text-[14px] w-[5%] md:text[16px]">LED face mask</h1>
+                            <div className="flex w-[60%] h-[60px] border-1 border-gray-500 bg-[#cccccc39] p-[6px] md:p-[10px] rounded-[8px]">
+                                {/* <Image width={24} height={16} src={"/images/wig1.png"} alt="" className="w-4 md:w-6" /> */}
+                            </div>
+
                         </div>
                     </motion.div>
                 </motion.div>
