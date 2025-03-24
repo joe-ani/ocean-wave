@@ -417,15 +417,15 @@ const Hero = () => {
                         &quot;we offer all types of high quality salon, spa, and beauty equipments.&quot;
                     </p>
                     <div ref={actionsRef} className="quickact flex space-x-5 md:flex-row space-y-3 md:space-y-0 md:space-x-3 py-4 items-start md:items-center">
-                        <Link href={"/shop"} onClick={() => setActiveLink("Shop")}>
+                        <Link href={"/shop"} onClick={() => setActiveLink("Shop")}>                  
                             <motion.button
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
                                 className="font-medium bg-gradient-to-tr from-[#fee88e] to-[#CBA335] text-[#111] text-[14px] md:text-[20px] rounded-full p-2 px-8 flex items-center">
                                 Shop
                                 <Image width={20} height={20} alt="arrow down" src="/icons/arrow.png" />
-                            </motion.button>
-                        </Link>
+                            </motion.button>              
+                        </Link>             
                         <motion.div
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}

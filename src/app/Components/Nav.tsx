@@ -156,7 +156,7 @@ const Nav = () => {
           <div className="flex justify-between items-center relative z-[110]">
             {/* Logo - adjusted size */}
             <Link href={"/"}>
-              <Image src="/logo.png" alt="Logo" width={80} height={50} />
+              <Image src="/logo.png" alt="Logo" width={70} height={50} />
             </Link>
 
             <div className="flex items-center space-x-8">
@@ -286,7 +286,7 @@ const Nav = () => {
             {/* Mobile Header */}
             <div className="flex justify-between items-center px-8 pt-6 pb-4 border-b border-[#ffffff20]">
               <Link href={"/"}>
-                <Image src="/logo.png" alt="Logo" width={100} height={50} />
+                <Image src="/logo.png" alt="Logo" width={70} height={50} />
               </Link>
               <button
                 className="text-white focus:outline-none p-2"
