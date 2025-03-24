@@ -232,8 +232,8 @@ const Hero = () => {
                 <div className="logo md:mb-0 flex justify-between w-full md:w-auto items-center relative z-50">
                     <Image
                         className="w-17 h-auto md:w-32"
-                        width={100}
-                        height={128}
+                        width={70}
+                        height={70}
                         priority
                         alt="Dfugo logo"
                         src="/logo.png"
