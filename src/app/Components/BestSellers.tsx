@@ -38,7 +38,7 @@ const BestSellers = () => {
             variants={containerVariants}
         >
             {/* Full-width gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-transparent via-[#ededed]/30 to-[#ededed] -z-10" />
+            <div className="absolute h-[120%] inset-0 bg-gradient-to-b md:bg-gradient-to-r from-transparent via-[#EDEDED]/30 to-[#EDEDED] -z-10" />
 
             <div className="container mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-12 md:py-20">
                 <div className="flex flex-col md:flex-row md:space-x-12 lg:space-x-24 space-y-8 md:space-y-0 items-center justify-center">
@@ -52,7 +52,7 @@ const BestSellers = () => {
                                   after:absolute after:inset-[1.5px] after:rounded-[15px] md:after:rounded-[18px] 
                                   after:bg-gradient-to-br after:from-white after:to-[#fafafa]
                                   w-[220px] sm:w-[260px] md:w-[300px] aspect-square
-                                  p-2 sm:p-4 md:p-8 shadow-md">
+                                  p-2 sm:p-4 md:p-8">
                         <div className="relative w-full h-full z-10">
                             <Image
                                 src="/images/chair.png"
@@ -67,10 +67,10 @@ const BestSellers = () => {
                     {/* Content section */}
                     <motion.div
                         variants={itemVariants}
-                        className="flex flex-col justify-center space-y-4 w-full md:w-auto px-10 md:px-2">
+                        className="flex flex-col justify-center space-y-4 w-full md:w-auto px-10 md:px-2 gap-4">
                         <div className="flex items-start flex-col space-y-2.5">
                             <div className="text-2xl sm:text-2xl md:text-3xl font-semibold tracking-tight">Spa Chair</div>
-                            <div className="w-28 sm:w-30 md:w-[150px] h-[1.5px] bg-gradient-to-r from-[#9d9d9d] to-transparent" />
+                            <div className="w-28 sm:w-30 md:w-[150px] h-[1px] bg-gradient-to-r from-[#9d9d9d] to-transparent" />
                             <div className="w-full max-w-[280px] sm:w-80 md:w-70 text-sm sm:text-sm md:text-base text-gray-600/90 leading-relaxed">
                                 This is a description text for the Spa Chair. It highlights the key features and benefits of this luxurious and comfortable seating option.
                             </div>
@@ -81,7 +81,7 @@ const BestSellers = () => {
                             whileTap={{ scale: 0.95 }}
                             className="font-medium bg-gradient-to-tr from-[#fee88e] to-[#CFAA3D] text-[#111] 
                                      text-sm tracking-wide rounded-full py-2.5 px-5 
-                                     flex items-center w-44 sm:w-40 md:w-44 gap-2">
+                                     flex items-center w-44 sm:w-40 md:w-44 gap-2 ">
                             Discover More
                             <ArrowRight size={16} strokeWidth={2.5} />
                         </motion.button>
