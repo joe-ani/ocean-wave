@@ -231,8 +231,8 @@ const Hero = () => {
             <div className="container mx-auto max-w-[1536px] flex flex-col md:flex-row justify-around items-center px-8 md:px-20 lg:px-40 pb-8 pt-0 md:pt-20">
                 <div className="logo md:mb-0 flex justify-between w-full md:w-auto items-center relative z-50">
                     <Image
-                        className="w-16 h-auto md:w-32"
-                        width={128}
+                        className="w-17 h-auto md:w-32"
+                        width={100}
                         height={128}
                         priority
                         alt="Dfugo logo"
