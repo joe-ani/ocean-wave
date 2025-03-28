@@ -11,20 +11,22 @@ interface CardProps {
 }
 
 const Offer: React.FC = () => {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  
   const cardVariants: Variants = {
     hidden: {
       opacity: 0,
-      x: typeof window !== 'undefined' && window.innerWidth < 768 ? -100 : 0,
-      y: typeof window !== 'undefined' && window.innerWidth >= 768 ? 100 : 0
+      x: isMobile ? -20 : 0,  // Reduced x offset on mobile
+      y: !isMobile ? 100 : 0
     },
     visible: (delay: number = 0) => ({
       opacity: 1,
       x: 0,
       y: 0,
       transition: {
-        duration: 0.8,
-        ease: "easeOut",
-        delay: delay
+        duration: isMobile ? 0.5 : 0.8, // Faster duration on mobile
+        ease: isMobile ? [0.25, 0.1, 0.25, 1] : "easeOut", // Smoother easing curve for mobile
+        delay: isMobile ? delay * 0.3 : delay // Shorter delays between items on mobile
       }
     })
   };
@@ -58,7 +60,11 @@ const Offer: React.FC = () => {
 };
 
 const Card: React.FC<CardProps> = ({ imgSrc, text, cardVariants, delay = 0 }) => {
-  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.2 });
+  const [ref, inView] = useInView({ 
+    triggerOnce: true, 
+    threshold: 0.1, // Lower threshold for earlier triggering
+    rootMargin: "50px" // Trigger slightly before the element comes into view
+  });
 
   return (
     <motion.div

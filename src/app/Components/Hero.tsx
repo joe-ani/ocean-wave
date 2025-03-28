@@ -403,9 +403,9 @@ const Hero = () => {
                         variants={heroTextVariants}
                         initial="hidden"
                         animate="visible"
-                        className="text-3xl md:text-5xl font-extrabold py-5">
+                        className="text-3xl md:text-5xl py-5 font-[900]">
                         {/* imlement modern text by text animation using framer */}
-                        <p>where innovation</p>
+                        <p>Where innovation</p>
                         <div className="flex gap-2">
                             <span className="bg-gradient-to-r from-[#CBA335] to-[#FEEF88] bg-clip-text text-transparent">meets Beauty.</span>
                         </div>
@@ -484,7 +484,7 @@ const Hero = () => {
                             </motion.div>
                         </div>
                         <div className="flex justify-between space-y-1.5 md:space-y-3">
-                            <h1 className="text-[14px] w-[5%] md:text[16px]">LED face mask</h1>
+                            <h1 className="text-[14px] w-[5%] md:text[19px]">LED Facial Mask</h1>
                             <div className="flex w-[60%] h-[60px] border-1 border-gray-500 bg-[#cccccc39] p-[6px] md:p-[10px] rounded-[8px]">
                                 {/* <Image width={24} height={16} src={"/images/wig1.png"} alt="" className="w-4 md:w-6" /> */}
                             </div>

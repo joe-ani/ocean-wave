@@ -60,7 +60,8 @@ const AboutFugo = () => {
                     </div>
                 </motion.div>
             </motion.div>
-            <div className="w-full bg-[#ededed] z-[-10] absolute h-[73%] sm:h-[85%]"></div>
+            {/* Changed the background div to be hidden on mobile and visible only on sm breakpoint and up */}
+            <div className="hidden sm:block w-full bg-[#ededed] z-[-10] absolute h-[85%]"></div>
         </div>
     );
 };
